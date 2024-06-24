@@ -21,7 +21,7 @@ params:
   # functional options
   disableThemeToggle: false
   ShowReadingTime: true
-  ShowShareButtons: true
+  ShowShareButtons: false
   ShowPostNavLinks: true
   ShowBreadCrumbs: true
   ShowCodeCopyButtons: true
@@ -66,7 +66,7 @@ params:
 
   # home-info mode
   homeInfoParams:
-    Title: "Hi there \U0001F44B"
+    Title: "Ben's Blog"
     Content: "In small proportions we just beauties see. And in short measures life may perfect be."
 
   socialIcons:
@@ -100,24 +100,30 @@ params:
     minMatchCharLength: 0
     limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
     keys: ["title", "permalink", "summary", "content"]
+
+# menu on right top
 menu:
   main:
     - identifier: categories
-      name: categories
+      name: Categories
       url: /categories/
       weight: 10
     - identifier: tags
-      name: tags
+      name: Tags
       url: /tags/
       weight: 20
     - identifier: archives
-      name: archives
+      name: Archives
       url: /archives/
       weight: 30
     - identifier: search
-      name: search
+      name: Search
       url: /search/
       weight: 40
+    - identifier: about
+      name: About
+      url: /about/
+      weight: 50
 
 # Read: https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#using-hugos-syntax-highlighter-chroma
 pygmentsUseClasses: true
@@ -129,6 +135,8 @@ markup:
     # guessSyntax: true
     # lineNos: true
     # style: monokai
+
+# search options
 outputs:
     home:
         - HTML
