@@ -4,7 +4,7 @@ date = 2024-06-24T20:50:48+08:00
 summary = 'Why Japanese prefer golang?'
 categories = ["CTF"]
 tag = ["Writeup"]
-draft = true
+draft = false
 +++
 
 > I played waniCTF 2024 as a member of H4aG4au who ranked 22nd. I solved 3 web, 1 crypto and 5 misc problems. Here are the solutions for the problems I solved.
