@@ -594,7 +594,7 @@ A 10x10 image with 42 KB. There must be some information hidden in it. Try binwa
 
 and final flag picture
 
-![](chal_tiny_10px.png)
+![](chal_tiny_10px.jpg)
 
 ## Epilogue
 
