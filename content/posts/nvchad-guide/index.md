@@ -324,7 +324,7 @@ NvChad 使用[`lazy.nvim`](https://github.com/folke/lazy.nvim) 管理插件，�
 
 是的你没有看错，Neovim 有 `copilot` 插件。~~那我还有什么理由用VS Code。~~
 
-## Add LSP
+### Add LSP
 
 此LSP 非老蛇皮，而是`Language Server Protocol`。LSP 是一种通信协议，用来连接编辑器和语言服务器，提供代码补全，语法检查等功能。NvChad 使用[`mason.nvim`](https://github.com/williamboman/mason.nvim) 管理LSP，可以自动安装和配置LSP。我们只需要在Nvim 中输入命令
 
