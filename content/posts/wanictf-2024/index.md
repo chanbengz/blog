@@ -13,7 +13,7 @@ draft = false
 really really hard
 
 ### Bad_Worker
-> Link: [https://web-bad-worker-lz56g6.wanictf.org/](https://web-pow-lz56g6.wanictf.org/)
+> Link: [https://web-bad-worker-lz56g6.wanictf.org/](https://web-bad-worker-lz56g6.wanictf.org/)
 
 Enter `Fetch Data`，press F12，in `Source` of inspector of browser to open `service-worker.js` to view the source script，in function `onFetch`, change
 ```python
@@ -59,7 +59,7 @@ for(let i = 0; i < 10; i++) {
 ### One Day One Letter
 > Link: [https://web-one-day-one-letter-lz56g6.wanictf.org/](https://web-one-day-one-letter-lz56g6.wanictf.org/)
 >
-> attachments: content-server.py, time-server.py
+> Attachments: `content-server.py`, `time-server.py`
 
 content-server.py
 ```python
@@ -262,7 +262,7 @@ initialize(); // call it 12 times to get full flag_enc
 ## Crypto
 teammates solved easy ones, left me the hard one
 ### dance
-> attachments: chall.py, mycipher.py, utils.py, output.txt
+> Attachments: `chall.py`, `mycipher.py`, `utils.py`, `output.txt`
 ```python
 from mycipher import MyCipher
 import hashlib
@@ -534,7 +534,7 @@ if __name__ == '__main__':
 ## Misc
 the misc problems are trival :(
 ### tiny_usb
-> attachments: chal_tiny_usb.iso
+> Attachments: `chal_tiny_usb.iso`
 
 If you're Mac user, the image can be mounted with double click.
 
@@ -547,7 +547,7 @@ Then you can see the flag picture.
 `FLAG{hey_i_just_bought_a_usb}`
 
 ### Surveillance_of_sus
-> attachments: Cache_chal.bin
+> Attachments: `Cache_chal.bin`
 
 It's a `RDP Bitmap Chache` file in `bin` format, extract with [bmc-tools](https://github.com/ANSSI-FR/bmc-tools)
 ```bash
@@ -560,7 +560,7 @@ Then you can see the picture pieces in bmp format. Next is to combine them to ge
 `FLAG{RDP_is_useful_yipeee}`
 
 ### codebreaker
-> attachments: chal_codebreaker.png
+> Attachments: `chal_codebreaker.png`
 
 ![](code.png)
 
@@ -579,14 +579,14 @@ We have Reed-Soloman Decoder in toolbox of QRazyBox to do the error correction. 
 ![](result.png)
 
 ### I_wanna_be_a_streamer
-> attachments: file.pcap
+> Attachments: `file.pcap`
 
 A H.264 video stream traffic. To extract the video, firstly, set the `RTP payload type` to `96` in settings of Wireshark, then use the [plugin](https://github.com/hongch911/WiresharkPlugin) to export the H.264 stream, and save as video. Open it with any video player, and you can see the flag.
 
 ![](2.png)
 
 ### tiny_10px
-> attachments: chal_tiny_10px.jpg
+> Attachments: `chal_tiny_10px.jpg`
 
 A 10x10 image with 42 KB. There must be some information hidden in it. Try binwalk with no further result coming out, I guess the stego is done by changing the width and height. So I tried to guess the width and height, and finally, it's 0x9F by 0x9F.
 
