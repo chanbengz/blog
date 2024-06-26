@@ -1,7 +1,7 @@
 +++
 title = "Neovim/Nvchad Beginner's Guide"
 date = 2024-06-27T00:26:29+08:00
-draft = true
+draft = false
 summary = "Throw VS Code Away! Get yourself A modern vim editor if you are a programmer!"
 tags = ['Vim']
 categories = ['Tools']
