@@ -9,27 +9,10 @@ summary = "Why PY? Hack for fun not for profit!"
 
 
 > 今年frank因为种种原因未能参加，虽然成绩不如往年但还是挺满意的 ~~今年py的越来越多了我***~~
-
-![](rank.png)
-
-## 目录
-
+>
 > Web和Pwn都没做出来（
 
-- [Misc](#Misc)
-  - [火锅链观光打卡 (签到)](#火锅链观光打卡)
-  - [神秘文件](#神秘文件)
-  - [通风机](通风机)
-  - [Power Trajectory Diagram](#Power Trajectory Diagram)
-- [Crypto](#Crypto)
-  - [古典密码](#古典密码)
-  - [hash](#hash)
-  - [用户信息访问控制](#用户信息访问控制)
-  - [平台可信认证](#平台可信认证)
-- [Reverse](#Reverse)
-  - [asm_re](#asm_re)
-  - [androidso_re](#androidso_re)
-  - [whereThel1b](#whereThel1b)
+![](rank.png)
 
 ## Misc
 
