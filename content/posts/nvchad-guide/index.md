@@ -8,14 +8,14 @@ categories = ['Tools']
 +++
 
 > **Warning**
-> 本文主要为Mac用户提供Neovim/Nvchad的安装，配置和使用食用指北。请Windows 用户老老实实用VS Code，不要折腾。如果想体验VIM，可以尝试安装Linux虚拟机/物理机。如果哪里讲得不清楚，请直接联系我。
+> 本文主要为Mac用户提供Neovim/Nvchad的安装，配置和使用食用指北。请Windows 用户老老实实用VS Code，不要折腾。如果想体验VIM，可以尝试安装Linux虚拟机/物理机。讲得不清楚的地方请直接指出。
 
 > **Info**
 > 本文在Macbook Pro 2017 Intel和Mac mini M1上编写，系统版本分别为Ventura和Sonoma, Neovim 版本为0.10.0。
 
 ## Preface
 
-使用Neovim 应该有两三年了，折腾来折腾去最终还是选择了[NvChad](https://github.com/NvChad/NvChad)这个配置。最近在[Monad](https://blog.monadx.com) 神的启发下，最近决定再重新配置一下Neovim 顺便改掉一些用Vim的坏习惯。从Neovim 0.9 到 0.10 遇到了一些坑，然后还发现NvChad又有大更新导致以前的config全滚挂了~~我\*\*~~。网上关于NvChad的教程也比较少，于是决定写一篇NvChad的新手指南。废话不多说，直接开始食用吧。
+使用Neovim 应该有两三年了，折腾来折腾去最终还是选择了[NvChad](https://github.com/NvChad/NvChad)这个配置。最近在[Monad](https://blog.monadx.com) 神的启发下，决定再重新配置一下Neovim 顺便改掉一些用Vim的坏习惯。从Neovim 0.9 到 0.10 遇到了一些坑，然后还发现NvChad又有大更新导致以前的config全滚挂了~~我\*\*~~。网上关于NvChad的教程也比较少，于是决定写一篇NvChad的新手指南。废话不多说，直接开始食用吧。
 
 ## Concepts
 
@@ -23,17 +23,17 @@ categories = ['Tools']
 
 ### Vi/Vim/Neovim
 
-`vi` 是Linux 上最常见的编辑器之一，而Vim 是vi 的升级版。Vim 用户可以通过 vimscript 来自定义Vim, aka 客制化。但是vimscript 有点古老，性能和学习成本比较高，于是Neovim 诞生了。Neovim 是Vim 的一个分支，它保留了Vim 的所有功能，同时还加入了一些现代化的特性，具体就不展开了，有兴趣的可以去[官网](https://neovim.io)看看。最重要的是，Neovim 主要用Lua 来配置，游戏开发者应该对Lua 不陌生。
+`vi` 是Linux 上最常见的编辑器之一，而vim 是vi 的升级版。vim 用户可以通过 vimscript 来自定义vim, aka 客制化。但是vimscript 有点古老，性能和学习成本比较高，于是Neovim 诞生了。Neovim 是vim 的一个分支，它保留了vim 的所有功能，同时还加入了一些现代化的特性，具体就不展开了，有兴趣可以去[官网](https://neovim.io)看看。最重要的是，Neovim 主要用Lua 来配置，游戏开发者应该对Lua 不陌生。
 
 那么问题来了，why vim/neovim? VS Code 不香吗?
 
-你说的对，但是VS Code 在我那台古老的Macbook Pro 非常卡。~~有点想剁手换电脑了~~ 而且经常用终端，切换来切换去也麻烦，有时候不想摸鼠标的时候就想要是有眼球追踪的鼠标就好了。所以这一切的解决办法就是，Vim，编辑器之神！~~再说了Vim 不酷炫吗？~~
+你说的对，但是VS Code 在我那台古老的Macbook Pro 非常卡。~~有点想剁手换电脑了~~ 而且经常用终端，切换来切换去也麻烦，不想摸鼠标的时候就着想要是有眼球追踪的鼠标就好了，但不太现实。所以这一切的解决办法就是，vim，编辑器之神！~~再说了Vim 不酷炫吗？~~
 
 综上所述，Vim 的优势就在于：快捷键方便，无鼠标操作，以及高度可定制化。当然，Vim 也有缺点，比如学习成本高，不太适合初学者，而且有时候配置起来也比较麻烦。但是有了NvChad 这个配置，可以简化许多操作。~~当然我用NvChad 只是因为懒得自己配置。~~
 
 ### NvChad
 
-NvChad 是一套开箱即用的Neovim 配置，相当于别人写好了拿过来直接用或者稍微改一下就好了，本质上就是依托插件集合和各种设置集合。UI 界面和功能也比较强大，可以媲美IDE。
+NvChad 是一套开箱即用的Neovim 配置，相当于别人写好了拿过来直接用或者稍微改一下就好了，本质上就是依托插件集合和各种设置集合。UI 界面和功能也比较强大，足以媲美IDE(或者说对大部分人而言IDE 很多功能用不到)。
 
 ## Installation
 
@@ -62,6 +62,8 @@ brew install neovim
 ```bash
 brew install font-hack-nerd-font
 ```
+
+然后记得在终端设置字体为`Hack Nerd Font`。说到终端，由于自带的终端不支持真彩色，所以推荐换成iTerm2 或者 whatever you like。
 
 ### Install GCC & MAKE
 
@@ -97,7 +99,7 @@ rm -rf ~/.local/share/nvim
 > 
 > 让新手退出Vim
 
-在配置之前先来了解Vim 的基本操作，然后就可以用Vim 来编写Vim 配置文件了, 完美！本节内容需要多加练习，不然很快就忘记了。
+在配置之前先来了解vim 的基本操作，然后就可以用vim 来编写vim 配置文件了, 完美！本节内容需要多加练习，不然很快就忘记了。
 
 ### Editing Your First File
 
@@ -161,15 +163,21 @@ Insert <-----> Normal <-----> Visual
 
 ### NvChad Functions
 
+> **Tips** <leader> 是一个特殊的按键，一般是空格键，可以在`chadrc.lua` 中修改。
+>
+> <M> 或者 <Meta> 或者 <A> 在Mac 上是`Option` 键，Windows 上是`Alt` 键。
+>
+> Vim 不会用到 command 键
+
 有时候不想退出Nvim 直接打开项目的其他文件，可以用nvimtree，快捷键是:
 
 ```plain
 <leader> e
 ```
 
-这里的`<leader>` 是一个特殊的按键，一般是空格键，可以在配置文件中修改。
-
 打开了多个文件后，用`Tab` 可以切换下一个文件，`Shift + Tab` 切换上一个，用`<leader> x` 可以关闭当前文件。
+
+如果打开了多个窗口(nvimtree窗口和文件窗口)，可以用`Ctrl + h/j/k/l` 来切换窗口。
 
 有的同学没了补全(Completion) 就不会写代码了，所以这个功能很重要。在提示框中按`Tab` 就可以选择提示，`Enter` 就可以确认。
 
@@ -215,7 +223,7 @@ nvim
     │   ├── lazy.lua
     │   └── lspconfig.lua
     ├── mappings.lua # 多碰
-    ├── options.lua
+    ├── options.lua # 别碰
     └── plugins
         └── init.lua # 多碰
 
@@ -228,11 +236,11 @@ nvim
 - `mappings.lua`: 快捷键设置文件，用来自定义快捷键，让输入更舒服。
 - `plugins/init.lua`: 插件设置文件，添加插件以及修改设置。
 
-剩下的再熟悉Nvim 配置之后再碰。
+剩下的文件等熟悉Nvim 配置之后再碰。
 
 ### Setup Dashboard
 
-NvChad 自带了一个Dashboard，可以在打开Nvim 的时候显示类似VS Code 的启动页面，可以用来快速打开文件。默认是关闭的，需要在`chadrc.lua` 中打开:
+NvChad 自带了一个Dashboard，在打开Nvim 的时候显示类似VS Code 的欢迎页面，可以用来快速打开文件。默认是关闭的，需要在`chadrc.lua` 中打开:
 
 ```lua
 M.ui = {
@@ -274,7 +282,7 @@ M.ui = {
 
 ### Modify Keybindings
 
-Vim 的快捷键可谓是灵魂，自定义可以让灵魂升华。在`mappings.lua` 中可以自定义快捷键，比如:
+Vim 的快捷键可谓是灵魂，而自定义让灵魂升华。在`mappings.lua` 中可以自定义快捷键，比如:
 
 ```lua
 map("n", ";", ":", { desc = "CMD enter command mode" })
@@ -300,7 +308,7 @@ vim.opt.mouse = ""
 
 ### Add Plugins
 
-NvChad 使用[`lazy.nvim`](https://github.com/folke/lazy.nvim) 管理插件，这个管理器可以延迟加载插件，提高启动速度。比如有一些插件只在特定文件类型下才会用到，就可以不加载节约资源。我们在`plugins/init.lua` 中添加插件:
+NvChad 使用[`lazy.nvim`](https://github.com/folke/lazy.nvim) 管理插件，这个管理器可以延迟加载插件，提高启动速度。比如有一些插件只在特定文件类型下才会用到，就可以不加载来节约资源 (点名批评VS Code 内存泄漏非常严重)。我们在`plugins/init.lua` 中添加插件:
 
 ```lua
   {
@@ -320,7 +328,7 @@ NvChad 使用[`lazy.nvim`](https://github.com/folke/lazy.nvim) 管理插件，�
   },
 ```
 
-这里的`lazy` 设置是否延迟加载，`false` 表示全局加载。`ft` 是文件类型，只有在这个文件类型下才会加载。
+~~这个语法应该挺好懂的。~~ 第一行是作者和插件名称，直接从Github Repo的左上角复制就行，或者作者一般会提供安装方法。这里的`lazy` 设置是否延迟加载，`false` 表示全局加载，剩下的选项不常用~~我也不会~~。`ft` 是文件类型，只有在这个文件类型下才会加载。
 
 是的你没有看错，Neovim 有 `copilot` 插件。~~那我还有什么理由用VS Code。~~
 
@@ -332,7 +340,7 @@ NvChad 使用[`lazy.nvim`](https://github.com/folke/lazy.nvim) 管理插件，�
 :MasonInstall <lsp>
 ```
 
-即可安装LSP，其中LSP 的名字可以在 `:Mason` 命令中查看。比如安装lua的LSP `lua-language-server`:
+即可安装LSP，其中LSP 的名字在 `:Mason` 命令中查看。比如安装lua的LSP `lua-language-server`:
 
 ```plain
 :MasonInstall lua-language-server
@@ -340,6 +348,6 @@ NvChad 使用[`lazy.nvim`](https://github.com/folke/lazy.nvim) 管理插件，�
 
 ## Epilogue
 
-心血来潮终于写完了这篇文章，希望对想入门的朋友有所帮助。~~绝对不是在水文章填充我这松弛的Blog~~。Vim 是一个非常强大的编辑器，但是学习成本也很高，所以不要急于求成，多练习多查文档。每次觉得某个操作好麻烦啊，就去网上查一下有没有更快的方法，快捷键或者插件什么的，慢慢就会熟练起来，而且常用常新~~不比npy有趣得多？~~
+心血来潮终于写完了这篇文章，希望对想入门的朋友有所帮助。~~绝对不是在水文章填充我这松弛的Blog~~。Vim 是一个非常强大的编辑器，虽然学习成本很高，多练习多查文档，慢慢就会熟练起来。每次觉得某个操作好麻烦啊，就去网上查一下有没有更快的方法，快捷键或者插件什么的，常用常新~~不比npy有趣得多？~~
 
-Vim 之于程序员，就像武士之于剑术，是一种精神，一种态度。捣鼓这些有的稀奇古怪的玩意也是一种乐趣。最后祝大家都能成为Vim 大师，~~然后把VS Code 扔掉~~。
+俗话说工欲善其事必先利其器，捣鼓这些稀奇古怪的玩意也是一种乐趣。最后祝大家都能成为Vim 大师，~~然后把VS Code 扔掉~~。
