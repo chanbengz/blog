@@ -4,7 +4,7 @@ date = 2024-04-07T12:28:31+08:00
 draft = false
 summary = "If a younger player works better than you, you should retire early."
 categories = ["CTF"]
-tags = ["Writeup"]
+tags = ["Writeup", "COMPASS"]
 +++
 
 ## [Web] F12

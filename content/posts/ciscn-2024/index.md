@@ -4,7 +4,7 @@ date = 2024-05-19T19:00:00+08:00
 draft = false
 tags = ['CISCN', 'Writeup']
 categories = ['CTF']
-summary = "Why PY? Hack for fun not for profit!"
+summary = "Why not forbid PY? Hack for fun not for profit."
 +++
 
 

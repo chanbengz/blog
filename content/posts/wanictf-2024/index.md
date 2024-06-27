@@ -3,7 +3,7 @@ title = 'waniCTF 2024 Personal Writeup'
 date = 2024-06-24T20:50:48+08:00
 summary = 'Why Japanese prefer golang?'
 categories = ["CTF"]
-tag = ["Writeup"]
+tags = ["Writeup"]
 draft = false
 +++
 
