@@ -163,9 +163,9 @@ Insert <-----> Normal <-----> Visual
 
 ### NvChad Functions
 
-> **Tips** <leader> 是一个特殊的按键，一般是空格键，可以在`chadrc.lua` 中修改。
+> **Tips** \<leader\> 是一个特殊的按键，一般是空格键，可以在`chadrc.lua` 中修改。
 >
-> <M> 或者 <Meta> 或者 <A> 在Mac 上是`Option` 键，Windows 上是`Alt` 键。
+> \<M\> 或者 \<Meta\> 或者 \<A\> 在Mac 上是`Option` 键，Windows 上是`Alt` 键。
 >
 > Vim 不会用到 command 键
 
