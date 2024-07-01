@@ -77,7 +77,7 @@ params:
     - name: telegram
       url: "https://t.me/z4grus"
     - name: email
-      url: "mailto://chanben04gz@gmail.com"
+      url: "mailto:chanben04gz@gmail.com"
 
   cover:
     hidden: true # hide everywhere but not in structured data

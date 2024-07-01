@@ -39,6 +39,14 @@ NvChad 是一套开箱即用的Neovim 配置，相当于别人写好了拿过来
 
 安装Neovim 和NvChad 非常简单，只需要几行命令就可以搞定。如果不知道什么是命令行请屏蔽本文。
 
+### Install GCC & MAKE
+
+有些插件需要编译，所以需要安装gcc 和make：
+
+```bash
+sudo xcode-select --install
+```
+
 ### Install Homebrew
 
 [`Homebrew`](https://brew.sh/) 是Mac 上的包管理器，类似于Linux 上的`apt` 和 `pacman`。安装Homebrew 只需要一行命令：
@@ -64,14 +72,6 @@ brew install font-hack-nerd-font
 ```
 
 然后记得在终端设置字体为`Hack Nerd Font`。说到终端，由于自带的终端不支持真彩色，所以推荐换成iTerm2 或者 whatever you like。
-
-### Install GCC & MAKE
-
-有些插件需要编译，所以需要安装gcc 和make：
-
-```bash
-sudo xcode-select --install
-```
 
 ### Install Nvchad
 
