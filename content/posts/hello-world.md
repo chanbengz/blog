@@ -5,7 +5,7 @@ draft = false
 summary = "This is my new blog site, moving from Hexo to Hugo. Hope you like it."
 +++
 
-The reason for migrating from Hexo to Hugo is that
+These days the thoughts of migrating my blog site keeps blowing my mind since
 - The server and domain that I rent is going to expire soon, and I don't want to renew it.
 - The previous content is not well-organized, and I want to start over.
 - The only solution is to deploy on GitHub Pages.
