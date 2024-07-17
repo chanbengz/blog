@@ -5,6 +5,7 @@ summary = 'Why Japanese prefer golang?'
 categories = ["CTF"]
 tags = ["Writeup"]
 draft = false
+math = true
 +++
 
 > I played waniCTF 2024 as a member of H4aG4au who ranked 22nd. I solved 3 web, 1 crypto and 5 misc problems. Here are the solutions for the problems I solved.

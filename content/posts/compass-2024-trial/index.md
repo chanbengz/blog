@@ -5,6 +5,7 @@ draft = false
 summary = "If a younger player works better than you, you should retire early."
 categories = ["CTF"]
 tags = ["Writeup", "COMPASS"]
+math = true
 +++
 
 ## [Web] F12

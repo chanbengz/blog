@@ -5,6 +5,7 @@ draft = false
 tags = ['Writeup', 'BCACTF']
 categories = ['CTF']
 summary = "F**k the final exam, let's play CTF!"
+math = true
 +++
 
 # BCACTF 5.0
@@ -395,11 +396,11 @@ print('\nIncorrect!')
 
 假设明文为$m_1, m_2$ 对应的密文为$c_1, c_2$，流密码算法的stream为$s$，那么
 
-$$ \begin{align*} c_1 &= m_1 \oplus s \\ c_2 &= m_2 \oplus s \end{align*} $$
+$$\begin{align*} c_1 &= m_1 \oplus s \\ c_2 &= m_2 \oplus s \end{align*}$$
 
 所以有 
 
-$$ c_1 \oplus c_2 = m_1 \oplus s \oplus m_2 \oplus s = m_1 \oplus m_2$$
+$$c_1 \oplus c_2 = m_1 \oplus s \oplus m_2 \oplus s = m_1 \oplus m_2$$
 
 然后如果$m_1$是secret，那么我们知道$m_2$就可还原出$m_1$。payload 如下
 
