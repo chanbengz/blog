@@ -394,8 +394,9 @@ print('\nIncorrect!')
 
 流密码 chacha20 的已知明文攻击，非常trivial。假设明文为$m_1, m_2$ 对应的密文为$c_1, c_2$，流密码算法的stream为$s$，那么
 
-$$c_1 &= m_1 \oplus s$$
-$$c_2 &= m_2 \oplus s$$
+$$c_1 = m_1 \oplus s$$
+
+$$c_2 = m_2 \oplus s$$
 
 所以有 
 
