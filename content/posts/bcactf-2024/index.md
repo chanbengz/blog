@@ -436,7 +436,8 @@ print(p.recvline().decode())
 ```
 
 ### Time Skip
-
+> #### Description:
+> 
 > One of our problem writers got sent back in time! We found a piece a very very old piece of parchment where he disappeared, alongside a long cylinder. See if you can uncover his flag!
 
 parchment.txt
@@ -554,7 +555,7 @@ string.txt
 ^`Zheh|Ey7/r\b\T&6r/][j}
 ```
 
-brainfuck，直接跑程序崩了。猜测应该需要反着做还原string.txt。brainfuck 的模拟图灵机挺简单的，`-` 和 `=` 换一下就可以了。
+brainfuck，直接跑程序崩了。猜测应该需要反着做还原string.txt。brainfuck 的模拟图灵机挺简单的，`-` 和 `+` 换一下就可以了。
 
 还原的 script_rev.txt，然后string.txt 输入进去
 
