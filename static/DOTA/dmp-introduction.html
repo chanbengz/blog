@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMP Introduction</title>
+    <link rel="stylesheet" href="cache-introduction-styles.css">
+</head>
+<body>
+    <h1>DMP</h1>
+    <div class="container">
+        <div class="section">
+            <h2>What is DMP?</h2>
+            <p>Data Memory-Dependent Prefetcher (DMP) is a hardware component designed to optimize memory access performance. It predicts the memory addresses that the program will access and preloads the data, thereby reducing memory access latency. Traditional prefetchers base their predictions on historical access patterns, whereas DMP uses the contents of data memory to make predictions, handling irregular memory access patterns.</p>
+        </div>
+
+        <div class="section">
+            <h2>How DMP Works?</h2>
+            <p><strong>Step1: Observing Cache Line Data</strong></p>
+            <p>The DMP scans the data in an L1 line when that line is filled to the L1, if the line is not marked with the “do-not-scan” hint (i.e., the line has not been scanned since it was brought into the cache). The DMP performs the scan by checking each pointer size-aligned chunk (the first 64 bits, second 64 bits, etc.) in the cache line</p>
+            <p><strong>Step2:  Address Check</strong></p>
+            <p>Next, the DMP applies additional checks and filters to each chunk (candidate pointer) to see if it should be dereferenced. If the value represents an address within the 4GB vicinity of the current address, DMP will consider this value as an address and perform preloading.</p>
+        </div>
+    </div>
+</body>
+</html>

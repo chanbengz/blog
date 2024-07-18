@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cache Simulation</title>
+    <link rel="stylesheet" href="cache-introduction-styles.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1>Introduction to Cache</h1>
+        <div class="section">
+            <h2>What is Cache?</h2>
+            <p>
+                A cache is a high-speed memory subsystem that stores frequently accessed data to reduce access time and improve processor performance. The basic working principle of a cache is to store data that is likely to be used again in the near future, thereby reducing the number of times data needs to be read from the main memory.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Cache Architecture</h2>
+            <div class="svg">
+                <svg width="650" height="400">
+                    <!-- CPU Cores -->
+                    <rect class="box" x="50" y="50" width="100" height="100"></rect>
+                    <text class="text" x="65" y="80">CPU Core 1</text>
+                    <rect class="box" x="200" y="50" width="100" height="100"></rect>
+                    <text class="text" x="215" y="80">CPU Core 2</text>
+                    <rect class="box" x="350" y="50" width="100" height="100"></rect>
+                    <text class="text" x="365" y="80">CPU Core 3</text>
+                    <rect class="box" x="500" y="50" width="100" height="100"></rect>
+                    <text class="text" x="515" y="80">CPU Core 4</text>
+            
+                    <!-- L1 Caches -->
+                    <rect class="box" x="60" y="110" width="80" height="30"></rect>
+                    <text class="text" x="90" y="130">L1</text>
+                    <rect class="box" x="210" y="110" width="80" height="30"></rect>
+                    <text class="text" x="240" y="130">L1</text>
+                    <rect class="box" x="360" y="110" width="80" height="30"></rect>
+                    <text class="text" x="390" y="130">L1</text>
+                    <rect class="box" x="510" y="110" width="80" height="30"></rect>
+                    <text class="text" x="540" y="130">L1</text>
+            
+                    <!-- L2 Cache -->
+                    <rect class="box" x="80" y="180" width="490" height="40"></rect>
+                    <text class="text" x="300" y="205">L2 Cache</text>
+            
+                    <!-- Lines from L1 to L2 -->
+                    <line class="line" x1="100" y1="150" x2="100" y2="180"></line>
+                    <line class="line" x1="250" y1="150" x2="250" y2="180"></line>
+                    <line class="line" x1="400" y1="150" x2="400" y2="180"></line>
+                    <line class="line" x1="550" y1="150" x2="550" y2="180"></line>
+            
+                    <!-- L3 Cache -->
+                    <rect class="box" x="275" y="260" width="100" height="40"></rect>
+                    <text class="text" x="295" y="285">L3 Cache</text>
+            
+                    <!-- Line from L2 to L3 -->
+                    <line class="line" x1="325" y1="220" x2="325" y2="260"></line>
+            
+                    <!-- Memory -->
+                    <rect class="box" x="275" y="340" width="100" height="40"></rect>
+                    <text class="text" x="300" y="365">Memory</text>
+            
+                    <!-- Line from L3 Cache to Memory -->
+                    <line class="line" x1="325" y1="300" x2="325" y2="340"></line>
+                </svg>
+            </div>
+            <p>This structure demonstrates the hierarchical nature of memory access in modern computer systems, where faster but smaller memory levels (like L1 and L2 Caches) are used to store frequently accessed data and instructions, reducing the need to access slower but larger memory levels.</p>
+            <p>If some data isn't found in faster but smaller levels, the computer should seek it from by accessing slower but larger memory levels, which is called <strong>Cache Miss</strong> (opposite to <strong>Cache Hit</strong>).</p>
+        </div>
+
+        <div class="section">
+            <h2>Address Mapping</h2>
+            <p>Since cache is faster but smaller, the computer should decide which compartment to store when data comes from memory.</p>
+            <h3>Direct-Mapped Cache</h3>
+            <p>
+                A direct-mapped cache is the simplest form of cache organization. Each main memory address maps to a unique location in the cache. The mapping process involves:
+            </p>
+            <h3>N-Way Set Associative Cache</h3>
+            <p>
+                A n-way set associative cache is divided into multiple sets, each containing multiple ways. Each main memory address maps to a specific set, but can be stored in any way within that set.
+            </p>
+            
+        </div>
+
+        <div class="section">
+            <h2>Cache Simulation</h2>
+            <p>
+                To better understand how cache works, let's simulate two common types of cache organization: Direct-Mapped Cache and 2-Way Set Associative Cache.
+            </p>
+            <div class="inputDiv">
+                <label for="addressInput">Enter Memory Address:</label>
+                <input type="number" id="addressInput" min="0" step="1">
+                <button onclick="accessData()">Access Data</button>
+                <p id="binary"></p>
+                <p id="index"></p>
+                <p id="set"></p>
+            </div>
+            <div class="cache-container">
+                <div class="cache">
+                    <h2>Direct-Mapped Cache</h2>
+                    <table id="directMappedTable">
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Tag</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="cache">
+                    <h2>2-Way Set Associative Cache</h2>
+                    <table id="setAssociativeTable">
+                        <thead>
+                            <tr>
+                                <th>Set</th>
+                                <th>Way</th>
+                                <th>Tag</th>
+                                <th>Data</th>
+                                <th>Recent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const directMappedCache = Array(4).fill(null).map(() => ({ tag: null, data: null }));
+        const setAssociativeCache = Array(2).fill(null).map(() => [
+            { tag: null, data: null, recent: 0},
+            { tag: null, data: null, recent: 0}
+        ]);
+
+        function simulateDirectMapped() {
+            const address = parseInt(document.getElementById('addressInput').value);
+            if (isNaN(address)) return;
+
+            const index = address % 4;
+            const tag = Math.floor(address / 4);
+            const data = `Data${address}`;
+
+            directMappedCache[index] = { tag, data };
+
+            updateDirectMappedTable(address);
+        }
+
+        function simulate2WayAssociative() {
+            const address = parseInt(document.getElementById('addressInput').value);
+            if (isNaN(address)) return;
+
+            const set = address % 2;
+            const tag = Math.floor(address / 2);
+            const data = `Data${address}`;
+
+
+            if (setAssociativeCache[set][0].tag === null || setAssociativeCache[set][0].tag === tag) {
+                setAssociativeCache[set][0] = { tag, data, recent: 1};
+                setAssociativeCache[set][1].recent = 0;
+            } else if(setAssociativeCache[set][1].tag === null || setAssociativeCache[set][1].tag === tag) {
+                setAssociativeCache[set][1] = { tag, data, recent: 1};
+                setAssociativeCache[set][0].recent = 0;
+            } else {
+                if (setAssociativeCache[set][0].recent == 1) {
+                    setAssociativeCache[set][1] = { tag, data, recent: 1};
+                    setAssociativeCache[set][0].recent = 0;
+                } else {
+                    setAssociativeCache[set][0] = { tag, data, recent: 1};
+                    setAssociativeCache[set][1].recent = 0;
+                }
+            }
+
+            updateSetAssociativeTable();
+        }
+
+        function isFiniteNumber(value) {
+            return typeof value === 'number' && Number.isFinite(value);
+        }
+
+        function decimalToBinary(decimal) {  
+            return decimal.toString(2);
+        }  
+
+        function updateDirectMappedTable() {
+            const tbody = document.getElementById('directMappedTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            directMappedCache.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${index}</td><td>${entry.tag !== null ? entry.tag : ''}</td><td>${entry.data !== null ? entry.data : ''}</td>`;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateSetAssociativeTable() {
+            const tbody = document.getElementById('setAssociativeTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            setAssociativeCache.forEach((set, setIndex) => {
+                set.forEach((entry, wayIndex) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${setIndex}</td><td>${wayIndex}</td><td>${entry.tag !== null ? entry.tag : ''}</td><td>${entry.data !== null ? entry.data : ''}</td><td>${entry.recent}</td>`;
+                    tbody.appendChild(row);
+                });
+            });
+        }
+
+        function accessData() {
+            
+            const address = parseInt(document.getElementById('addressInput').value);
+
+            if (isFiniteNumber(address)) {
+                const cache1Line = document.querySelector('#index');
+                let hitOrMiss = cache1Hit(address) ? 'Hit' : 'Miss';
+                cache1Line.innerHTML = `<strong>Direct-Mapped Cache ${hitOrMiss}</strong> <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Index: address % cacheSize = ${address % 4} <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tag: address / cacheSize = ${Math.floor(address / 4)}`;
+                hitOrMiss = cache2Hit(address) ? 'Hit' : 'Miss';
+                const cache2Line = document.querySelector('#set');
+                cache2Line.innerHTML = `<strong>2-Way Associative Cache ${hitOrMiss}</strong> <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set: address % setNum = ${address % 2} <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tag: address / setNum = ${Math.floor(address / 2)}`;
+            }
+            simulateDirectMapped();
+            simulate2WayAssociative();
+        }
+
+        function cache1Hit(address) {
+            for (let i = 0; i < directMappedCache.length; i++) {
+                if (directMappedCache[i].data == `Data${address}`) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function cache2Hit(address) {
+            for (let i = 0; i < setAssociativeCache.length; i++) {
+                for (let j = 0; j < setAssociativeCache[i].length; j++) {
+                    if (setAssociativeCache[i][j].data == `Data${address}`) {
+                        return true;
+                   }
+                }
+            }
+            return false;
+        }
+ 
+        updateDirectMappedTable();
+        updateSetAssociativeTable();
+    </script>
+</body>
+</html>

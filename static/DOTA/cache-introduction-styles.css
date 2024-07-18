@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+h1, h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+h1 {
+    text-align: center;
+    margin-top: 40px;
+}
+h2 {
+    border-bottom: 2px solid #318ac5;
+    padding-bottom: 5px;
+}
+h3 {
+    font-size: 20px;
+}
+p {
+    font-size: 20px;
+    text-indent: 2em;
+}
+label {
+    font-size: 20px;
+}
+button {
+    font-size: 20px;
+    background-color: #318ac5;
+    transition: all 0.5s;
+    color: #f0f0f0;
+    border: 2px solid #318ac5;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover {
+    border: 2px solid #345678;
+    background-color: #345678;
+    color: #fff;
+}
+#addressInput {
+    font-size: 20px;
+    border-radius: 4px;
+}
+.section {
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.5s;
+}
+.section:hover {
+    background-color: #fff;
+}
+.section:last-child {
+    margin-bottom: 40px;
+}
+svg {
+    border: 1px solid #ccc;
+}
+
+.box {
+    fill: #f9f9f9;
+    stroke: #333;
+    stroke-width: 2;
+}
+.text {
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+.line {
+    stroke: #333;
+    stroke-width: 2;
+}
+.cache-container {
+    display: flex;
+    margin-top: 20px;
+}
+.cache {
+    margin: 0 20px;
+}
+table {
+    border-collapse: collapse;
+    margin-top: 10px;
+    width: 100%;
+}
+th, td {
+    border: 1px solid #333;
+    padding: 8px;
+    text-align: center;
+}

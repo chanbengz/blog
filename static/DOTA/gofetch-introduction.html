@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoFetch Introduction</title>
+    <link rel="stylesheet" href="gofetch-introduction-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+<body>
+
+    <h1>Welcome to the world of GoFetch!</h1>
+
+    <div class="left-right-container">
+        <div class="left">
+
+            <div class="section">
+                <h2>What is GoFetch?</h2>
+                <p><span class="highlight">GoFetch</span> is a family of <span class="clickable" onclick="clickSideChannelAttack()">Side-Channel Attacks</span> on recent Apple silicon CPUs that exploits the CPU's on-chip <span class="clickable" onclick="clickDMP()">data memory-dependent prefetcher (DMP)</span> and <span class="clickable" onclick="clickCache()">Cache</span> to investigate the contents of memory. CPUs affected include the M1, M2, M3 and A14 series system-on-a-chip processors.</p>
+            </div>
+
+            <div class="section">
+                <h2>Basic Knowledges</h2>
+                <p>This webpage aims to offer viewers a comprehensive introduction to the working mechanisms of GoFetch. Before diving into detailed explanations and simulations, please make sure you have a basic understanding of the following concepts:</p>
+                <ul class="color-blocks">
+                    <li class="color-block" onclick="clickCache()">Cache</li>
+                    <li class="color-block" onclick="clickDMP()">DMP</li>
+                    <li class="color-block" onclick="clickSideChannelAttack()">Side-Channel Attacks</li>
+                </ul>
+                <p>If you are unfamiliar with any of the terms, please click on the term and explore the underlying principles and mechanisms.</p>
+                <p>If you are ready, <strong>LET's GET START!!!</strong></p>
+            </div>
+            <div class="section">                
+                <h2>Example: Hack the ct-swap Program</h2>
+                <h3>CT-Swap</h3>
+                <p>We have already learned that if the time required for the program to run under different branches is various, we can obtain the running information of the program by measuring the time.</p>
+                <p>Such as, if we use the function shown below to swap values in two arrays, the attacker could easily deduce the secret, because when secret == False, the function would terminate much more quickly than when secret == True.</p>
+                <pre>
+                    <code>
+                void swap(boolean secret, int[] a, int[] b, int len) {
+                    if (secret) {
+                        for (int i = 0; i < len; i++) {
+                            int tmp = a[i];
+                            a[i] = b[i];
+                            b[i] = tmp;
+                        }
+                    }
+                }
+                    </code>
+                </pre>
+                <p>Thus, we should use a constant-time swap function to enhance the system security. ct-swap program is a constant-time swap primitive used in various cryptographic implementations. No matter what value the secret takes, the function would terminate in a constant time.</p>
+                <pre>
+                    <code>
+                void ctSwap(boolean secret, int[] a, int[] b, int len) {
+                    int secretInNum = secret ? 1 : 0;
+                    int mask = ~(secret - 1);
+                    for (int i = 0; i < len; i++) {
+                        int delta = (a[i] ^ b[i]) & mask;
+                        a[i] = a[i] ^ delta;
+                        b[i] = b[i] ^ delta;
+                    }
+                }
+                    </code>
+                </pre>
+
+                <p>By using ct-swap, the attacker can't guess program running branches by measuring the execution time. However, DMP makes it different.</p>
+                
+                <h3>Understanding the Vulnerability</h3>
+                <p>Data Memory-dependent Prefetchers (DMPs) are hardware optimizations designed to speed up irregular memory access patterns by prefetching data into the cache based on the contents of data memory. However, this behavior can be exploited to leak sensitive information, even from constant-time cryptographic implementations.</p>
+                <p>Here's a simplified explanation of how DMPs can be leveraged in an attack:</p>
+                <ol>
+                    <li>The attacker crafts input data that, when processed by the ct-swap program, results in intermediate states that resemble pointers.</li>
+                    <li>The DMP, which attempts to prefetch data based on these intermediate states, brings sensitive data into the cache.</li>
+                    <li>The attacker then measures the cache state to infer information about the sensitive data.</li>
+                </ol>
+                <h3>Detailed Steps</h3>
+                <p>The following steps outline how an attacker can use GoFetch to exploit the ct-swap program:</p>
+                <ol>
+        
+                    <li><strong>Craft Inputs:</strong> The attacker carefully constructs a set of data to make a[] is filled with ordinary values and b[] is filled with values that look like addresses. DMP will prefetch the data pointed to by the addresses in b[] and tag b[] with a scanned label.</li>
+                    <li><strong>Run Prime&Probe:</strong> The attacker starts running Prime&Probe to continuously load data and control the cache.</li>
+                    <li><strong>Run ct-swap:</strong> If secret == False, the data in a[] and b[] are not swapped, and DMP does not work. If secret == True, the data in a[] and b[] are swapped. Since a[] satisfies the conditions of 'don't have scanned label' and 'values seem like addresses', DMP will be activated, moving the data pointed to by the addresses to the cache.</li>
+                    <li><strong>Measure Time:</strong> If the Prime&Probe program running continuously in the background detects an increase in access cache time, it proves that other data has been written to the cache after ct-swap has been run. Attackers can use this to infer the running information of the secret program.</li>
+                </ol>
+            </div>
+            <div class="section">
+                <h2>Simulation of Attack</h2>
+                <div class="clickable" onclick="jumpToGofetchDemo()">
+                    <p>Let's simulate an attack using GoFetch on a simplified program which simulates the cache, ct-swap funciton, and the attacker!</p>
+                </div>
+            </div>
+            <div class="section">
+                <h2>Defense Mechanisms</h2>
+                <p>To mitigate such attacks, developers can employ several defense mechanisms:</p>
+                <ul>
+                    <li><strong>Disable Prefetchers:</strong> Disabling DMPs at the hardware level can prevent such attacks, though it might affect performance.</li>
+                    <li><strong>Constant-Time Programming:</strong> Ensure that cryptographic operations do not create data-dependent memory access patterns.</li>
+                    <li><strong>Cache Partitioning:</strong> Use techniques like cache partitioning to isolate sensitive data from attacker-controlled processes.</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>Conclusion</h2>
+                <p>This example highlights the importance of understanding hardware mechanisms like DMPs and their potential security implications. By studying and simulating attacks, developers can better protect their applications against sophisticated side-channel attacks.</p>
+                <p>For more detailed information on GoFetch and its capabilities, please refer to the full <span class="clickable" onclick="jumpToPaper()">research paper</span>.</p>
+            </div>
+        </div>
+
+        <div class="right">
+        </div>
+
+    </div>
+
+    <script>
+        let viewDMP = false;
+        let viewSideChannelAttack = false;
+        let viewCache = false;
+        const rightBar = document.querySelector('.right');
+        const leftBar = document.querySelector('.left');
+        function clickDMP() {
+            viewDMP = ~viewDMP;
+            viewSideChannelAttack = false;
+            viewCache = false;
+            if (viewDMP) {
+                rightBar.style.width = "380px";
+                rightBar.innerHTML = `
+                <div class="section">
+                    <h2>DMP</h2>
+                    <p>Data Memory-Dependent Prefetcher (DMP) is a hardware component designed to optimize memory access performance. It predicts the memory addresses that the program will access and preloads the data, thereby reducing memory access latency. Traditional prefetchers base their predictions on historical access patterns, whereas DMP uses the contents of data memory to make predictions, handling irregular memory access patterns.</p>
+                    <button onclick='jumpToDMPIntroduction()'>Go Explore!</button>
+                </div>
+                `;
+            } else {
+                rightBar.style.width = "0px";
+                rightBar.innerHTML = '';
+            }
+        }
+
+        function clickSideChannelAttack() {
+            viewDMP = false;
+            viewSideChannelAttack = ~viewSideChannelAttack;
+            viewCache = false;
+            if (viewSideChannelAttack) {
+                rightBar.style.width = "450px";
+                rightBar.innerHTML = `
+                <div class="section">
+                    <h2>Side Channel Attack</h2>
+                    <p>A Side-Channel Attack is a type of cybersecurity exploit that targets vulnerabilities in the physical implementation of a system, rather than weaknesses in its logical design or encryption algorithms. It involves analyzing information leaked from the system's side channels, such as power consumption, electromagnetic emissions, timing variations, or even acoustic cues, to infer sensitive information like encryption keys or data being processed. This non-invasive approach can bypass traditional security measures, posing a significant threat to secure systems.</p>
+                    <button onclick='jumpToSideChannelAttackIntroduction()'>Go Explore!</button>
+                </div>
+                `;
+            } else {
+                rightBar.style.width = "0px";
+                rightBar.innerHTML = '';
+            }
+        }
+
+        function clickCache() {
+            viewDMP = false;
+            viewSideChannelAttack = false;
+            viewCache = ~viewCache;
+            if (viewCache) {
+                rightBar.style.width = "400px";
+                rightBar.innerHTML = `
+                <div class="section">
+                    <h2>Cache</h2>
+                    <p>Cache, in computing terminology, refers to a high-speed data storage component that temporarily holds frequently accessed data, allowing for faster retrieval compared to slower memory or storage devices. It acts as an intermediary between the processor and main memory, reducing the need for the processor to access slower, but larger, memory systems for commonly used data. By storing recently accessed or anticipated data, cache significantly enhances the overall performance and responsiveness of a computer system.</p>
+                    <button onclick='jumpToCacheIntroduction()'>Go Explore!</button>
+                </div>
+                `;
+            } else {
+                rightBar.style.width = "0px";
+                rightBar.innerHTML = '';
+            }
+        }
+
+        function jumpToGofetchDemo() {
+            location.href = 'gofetch-demo.html';
+        }
+
+        function jumpToPaper() {
+            location.href = 'gofetch.pdf';
+        }
+
+        function jumpToCacheIntroduction() {
+            location.href = 'cache-introduction.html';
+        }
+
+        function jumpToDMPIntroduction() {
+            location.href = 'dmp-introduction.html';
+        }
+
+        function jumpToSideChannelAttackIntroduction() {
+            location.href = 'side-channel-attack-introduction.html';
+        }
+    </script>
+
+</body>
+</html>

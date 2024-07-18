@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoFetch Demo</title>
+    <link rel="stylesheet" href="gofetch-demo-styles.css">
+    <script type="text/javascript" src="echarts.js"></script>
+</head>
+<body>
+    
+    <h1>GoFetch</h1>
+
+    <div id="gofetch-demo" class="left-right-container">
+        <div class="left">
+            <div id="gofetch-demo-cache-container" class="panel cache-container">
+                <div id="cache-container-top" class="top">
+                    <h1 id="cache-title" onclick="refreshCache()">L2 Cache Simulator</h1>
+                    <div id="slow-switch-box" class="switch-box">
+                        Slow Down
+                        <label id="slow-switch" class="switch">
+                            <input type="checkbox">
+                            <span class="slider slow-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div id="cache-display" class="cache-display"></div>
+            </div>
+            <div id="inst-container" class="panel">
+                <p><strong>1.</strong> Here's a demonstration of the GoFetch attack, consisting of an L2 Cache simulator, a ct-swap program, and an attack program. During the demo, you can toggle the slow down switch at any time to observe the entire process more closely.</p>
+                <p><strong>2.</strong> According to the steps of the GoFetch attack, data is first populated into the two arrays used by ct-swap. You can directly click the "Set Value" button to fill a[] with values and b[] with pointers. Alternatively, you can use the V and P buttons on the right side of each array to fill the arrays with values or pointers, respectively. Once the data is filled into the arrays, DMP will activate and run. You will see some data being transferred to the L2 Cache.</p>
+                <p><strong>3.</strong> Next, run the attack program. The attack program will continuously flush data into the L2 Cache using the Prime&Probe method and measure the access time. After a while, the L2 Cache will be fully populated with data from the attack program, significantly reducing the data access time.</p>
+                <p><strong>4.</strong> Now, click the Swap Data button. DMP will be activated and store some data in the L2 Cache, significantly increasing the access time for the attack program. This proves that data swapping has occurred and that ct-swap has been compromised.</p>
+            </div>
+        </div>
+
+        <div class="right">
+
+            <div class="ct-swap">
+                <div class="ct-swap-top">
+                    <h1>CT Swaper</h1>
+
+                    <button id="ranValue" class="ct-swap-button" onclick="setValue()">Set Value</button>
+                    <button id ="doSwap" class="ct-swap-button" onclick="swap()">Do Swap</button>
+                </div>
+
+                <div class="array-container">
+                    <div class="array" id="array-a">
+                        <div class="array-box array-title">
+                            a
+                        </div>
+                        <div id="array-a-elements">
+                            <div class="array-box array-element"></div>
+                            <div class="array-box array-element"></div>
+                            <div class="array-box array-element"></div>
+                            <div class="array-box array-element"></div>
+                            <div class="array-box array-element"></div>
+                        </div>
+                        <div class="input-buttons">
+                            <button class="input-button value-button" id="value-button-a" onclick="setNumberA()">V</button>
+                            <button class="input-button pointer-button" id="pointer-button-a" onclick="setPointerA()">P</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="array-container">
+                    <div class="array" id="array-b">
+                        <div class="array-box array-title">
+                            b
+                        </div>
+                        <div id="array-b-elements">
+                            <div class="array-box array-element"></div>
+                            <div class="array-box array-element"></div>
+                            <div class="array-box array-element"></div>
+                            <div class="array-box array-element"></div>
+                            <div class="array-box array-element"></div>
+                        </div>
+                        <div class="input-buttons">
+                            <button class="input-button value-button" id="value-button-b" onclick="setNumberB()">V</button>
+                            <button class="input-button pointer-button" id="pointer-button-b" onclick="setPointerB()">P</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="description">
+                    <div class="little-box" id="before-dmp"></div>
+                    <div class="explain">Addresses that are waiting for DMP scanning</div>
+                </div>
+                <div class="description">
+                    <div class="little-box" id="on-dmp"></div>
+                    <div class="explain">The address that is being scanned by DMP</div>
+                </div>
+                <div class="description">
+                    <div class="little-box" id="after-dmp"></div>
+                    <div class="explain">Addresses that have been scanned by DMP</div>
+                </div>
+            </div>
+
+            <div class="attacker">
+                <div class="attacker-top">
+                    <h1>Attacker</h1>
+                    <div id="attacker-switch-box" class="switch-box">
+                        <label class="switch attack-switch">
+                            <input type="checkbox">
+                            <span class="slider attack-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="chart"></div>
+            </div>
+        </div>
+    </div>
+    <script src="gofetch-demo-script.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Side-Channel Attack Introduction</title>
+    <link rel="stylesheet" href="side-channel-attack-introduction-styles.css">
+</head>
+<body>
+    <h1>Side-Channel Attack</h1>
+
+    <div class="container">
+        <div class="section">
+            <h2>What is Side-Channel Attack?</h2>
+            <p>A side-channel attack is a type of security exploit that seeks to gather information from the physical implementation of a computer system rather than its logical operations or software code. Unlike traditional attacks that focus on exploiting software bugs or logical vulnerabilities, side-channel attacks leverage information leaked through physical channels.</p>
+        </div>
+        <div class="section">
+            <h2>An Example: Crack the Mechanical Lock</h2>
+            <p>
+                Here is a simulated four-digit mechanical lock. You need to find some methods to quickly crack it. Hint: try turning on the computer audio.</p>
+            <div class="lock">
+                <div class="digits">
+                    <div class="digit">
+                        <div class="arrow" onclick="changeDigit(0, 1)">&#9650;</div>
+                        <div class="number" id="digit0">0</div>
+                        <div class="arrow" onclick="changeDigit(0, -1)">&#9660;</div>
+                    </div>
+                    <div class="digit">
+                        <div class="arrow" onclick="changeDigit(1, 1)">&#9650;</div>
+                        <div class="number" id="digit1">0</div>
+                        <div class="arrow" onclick="changeDigit(1, -1)">&#9660;</div>
+                    </div>
+                    <div class="digit">
+                        <div class="arrow" onclick="changeDigit(2, 1)">&#9650;</div>
+                        <div class="number" id="digit2">0</div>
+                        <div class="arrow" onclick="changeDigit(2, -1)">&#9660;</div>
+                    </div>
+                    <div class="digit">
+                        <div class="arrow" onclick="changeDigit(3, 1)">&#9650;</div>
+                        <div class="number" id="digit3">0</div>
+                        <div class="arrow" onclick="changeDigit(3, -1)">&#9660;</div>
+                    </div>
+                </div>
+                <button onclick="checkCode()">Confirm</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Side-Channel Attack with Cache</h2>
+            <p>These exploit the behavior of the cache memory in modern processors. For instance, the timing of cache hits and misses can leak information about the data being processed. Common techniques include:</p>
+            <p><strong>· Flush+Reload:</strong> Monitors access to shared memory to detect when a victim accesses specific data.</p>
+            <p><strong>· Prime+Probe:</strong> Fills the cache with the attacker's data and then measures the time to reload the data to infer information about the victim's cache usage.</p>
+        </div>
+    </div>
+
+    <script>
+        const correctCode = [1, 3, 2, 4];
+        const currentCode = [0, 0, 0, 0];
+
+        function changeDigit(index, change) {
+            currentCode[index] = (currentCode[index] + change + 10) % 10;
+            document.getElementById(`digit${index}`).textContent = currentCode[index];
+        }
+
+        async function checkCode() {
+            let pare = 0;
+            for (let i = 0; i < correctCode.length; i++) {
+                if (correctCode[i] == currentCode[i]) {
+                    pare += 1;
+                } else {
+                    break;
+                }
+            }
+            const music = new Audio(`audio/${pare}.mp3`);
+            music.play();
+            const lock = document.querySelector('.lock');
+
+            if (pare < 4) {
+                lock.style.backgroundColor = '#ffaaaa';
+                await sleep(200);
+                lock.style.backgroundColor = '#fff';
+            } else {
+                lock.style.backgroundColor = '#aaffaa';
+                await sleep(200);
+                alert("Password Correct!");
+            }
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
