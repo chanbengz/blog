@@ -2,7 +2,7 @@
 title = 'GoFetch: Breaking Constant-Time Cryptographic Implementations Using Data Memory-Dependent Prefetchers'
 date = 2024-07-09T01:17:38+08:00
 draft = false
-summary = 'Apple f**ked up, is it really worthy to trade security for such little performance gain?'
+summary = 'Apple f**ked up. Is it really worthy to trade security off for such little performance gain?'
 categories = ['Security']
 tags = ['Paper', 'Apple', 'Side-Channel']
 +++
@@ -11,8 +11,7 @@ tags = ['Paper', 'Apple', 'Side-Channel']
 
 > #### Info
 >
-> 本文第一作者是 UIUC 的博士生 Boru Chen，
-> [官网](https://gofetch.fail), 开源地址[FPSG-UIUC](https://github.com/FPSG-UIUC/GoFetch)。
+> 本文第一作者是 UIUC 的博士生 Boru Chen [[官网]](https://gofetch.fail)
 
 参加 NUS 的夏令营时选择了这篇论文的复现+可视化+防御作为项目[^NUS SWS3011 DOTA]。~~项目本身非常trivial就不在这献丑了~~。这个侧信道攻击非常巧妙，但由于非常新颖，简中互联网暂时没有这篇文章的解读，于是决定尝试以本人浅薄的理解来解读一下。本文并不是翻译，而是对论文的解读，所以可能会有一些错误和论文中没有提到的内容。如果有错误，欢迎指正。
 
@@ -50,21 +49,23 @@ Prefetcher (预取器) 是一种硬件机制，用来预测未来可能会访问
 
 ### Apple M-series Chip
 
-Apple M 系列芯片是苹果自研的 ARM 芯片，与公版架构的 ARM 有很大不同。加入虚拟内存设计后，由于 MMU 地址转换的延迟太大，实际设计中 Cache 通常采用 VIPT (Virtual Index Physical Tag) 作为命中判断，即先通过虚拟地址推断缓存命中，再通过物理地址解决重名问题。这种设计简化了缓存侧信道的复杂度，因为攻击者可以推断受害者的虚拟地址并生成驱逐集(Eviction Set)和探测集(Probe Set)。
+> Apple M 系列是苹果自研的 ARM 芯片，从自家的 A 系列发展而来，与公版架构的 ARM 没啥关系。
+
+加入虚拟内存设计后，由于 MMU 地址转换的延迟太大，实际设计中 Cache 通常采用 VIPT (Virtual Index Physical Tag) 作为命中判断，即先通过虚拟地址推断缓存命中，再通过物理地址解决重名问题。这种设计简化了缓存侧信道的复杂度，因为攻击者可以推断受害者的虚拟地址并生成驱逐集(Eviction Set)和探测集(Probe Set)。
 
 Apple M1 有4个性能核心 (Firestorm) 和4个效率核心 (Icestorm)，DMP 只在性能核心的 Cache 上启用。M1 每个性能核心有一个L1 Cache, 容量为 128 KByte, 8 way set-associative, 每条cache line有64 Byte; 4个核心共享L2 Cache, 容量为 12 MByte, 12 way set-associative, 每条cache line有128 Byte。
 
 ## DMP Reverse Engineering
 
-GoFetch 攻击的核心是 DMP 解引用的机制，因此这一部分介绍作者是逆向 Apple M1 芯片的 DMP 策略的方法论和结果。作者通过一系列的实验和分析，发现了 Apple M1 芯片的 DMP 策略非常激进, 并且有一些限制上的特性反倒促成了这次的漏洞。TL;DR 的内容是与本文攻击相关的特性，方便后续理解。
+GoFetch 攻击的核心是 DMP 解引用的机制，因此这一部分介绍作者是逆向 Apple M1 芯片的 DMP 策略的方法论和结果。作者通过一系列的实验和分析，发现了 Apple M1 芯片的 DMP 策略非常激进, 并且有一些限制上的特性反倒促成了这次的漏洞。`TL;DR` 的内容是与本文攻击相关的特性，方便后续理解。
 
-### DMP Data Access Pattern
+### Data Access Pattern
 
 > #### TL;DR
 > 
 > 无论是否主动解引用指针，DMP 都会预取当前指针指向的数据(预解引用) 和后续指针指向的数据。
 
-该作者之前的工作 [Augury](https://www.prefetchers.info/augury.pdf) 揭示了 DMP 的一个特性。对于一个指针数组 (array of pointers, aop)，DMP 会根据解引用历史，预测并预取后续未解引用的指针。例如下面的实验代码:
+作者之前的工作 [Augury](https://www.prefetchers.info/augury.pdf) 揭示了 DMP 的一个特性。对于一个指针数组 (array of pointers, aop)，DMP 会根据解引用历史，预取后续未解引用的指针。例如下面的实验代码:
 
 ```c
 uint64_t* aop[M]; // M = 264, N = 256
@@ -94,7 +95,7 @@ for (int i = 0; i < N; i++) {
 
 [^3]: 作者这里使用的是 architectural dereference (架构上解引用), 为方便理解就翻译成主动解引用了
 
-### DMP Activation Criteria
+### Activation Criteria
 
 > #### TL;DR
 >
@@ -104,15 +105,77 @@ for (int i = 0; i < N; i++) {
 
 作者首先访问一个指针`ptr`，并将其与其指向的数据都驱逐出 cache，然后再访问其他垃圾数据来清刷一定量的历史记录。最后再访问`ptr`，探测 DMP 是否解引用了`ptr`。实验结果表明，DMP 解引用的概率随着垃圾数据的数量增加而提升，即 `ptr` 近期内不会重复解引用，这表明 DMP 会记录解引用历史。这个实验还能推测历史记录的大概容量，作者认为 DMP 对于128个记录后重复解引用的概率很高。
 
-上小节只研究数据从 L2 到 L1 的情况，于是作者进一步研究数据从 DRAM 到 L1 的情况 (Cache Miss)。由于 L1 每条 Cache 大小是 `64 Byte = 8 * sizeof(int64)`, L2 大小刚好是 L1 的两倍，当缓存未命中时，数据会填充到 L1 和 L2。作者发现访问一个指针`aop[i]`时，如果`i = 0..7`，那么 DMP 只会解引用`aop[0..7]`, 如果`i = 8..15`，那么 DMP 会解引用`aop[8..15]`，这刚好是 L2 Cache Line 的上半部份和下半部份。这个实验表明 DMP 只会解引用 L1 填充的部分而不会解引用 L2 的部分。
+上小节只考虑了 DMP 的预测和解引用机制，于是作者进一步研究数据从 DRAM 填充到 L1 L2 的情况 (Cache Miss) 来解释机制背后的原因。回忆一下，L1 每条 Cache Line 的大小是 `64 Byte = 8 * sizeof(int64)`, L2 每条的大小刚好是 L1 的两倍。当缓存未命中时，数据会填充到 L1 和 L2。作者发现访问一个指针 `aop[i]` 时，如果 `i = 0..7`，那么 DMP 只会解引用 `aop[0..7]`, 如果 `i = 8..15`，那么 DMP 会解引用`aop[8..15]`，这刚好是 L2 Cache Line 的上半部份和下半部份。这个实验表明 DMP 只会解引用 L1 填充的部分而不会解引用 L2 的部分。这是否说明 DMP 只会预取到 L1?
 
-DMP 中还存在一个已扫描标记。
+DMP 会为 L1 缓存打上已扫描标记。基于前面的实验，作者猜想 DMP 在填充 L1 Cache Line 的时候会扫描整个 Line，但是这个假设仍存在细节上的缺失，于是作者设计了另一个实验：还是先加载`aop`，然后驱逐`ptr`指向的数据。接着尝试
+- 将`aop`逐出 L1，然后再访问`aop`，观察 DMP 是否解引用`ptr`。结果是❎。
+- 逐出 L1 和 L2，然后访问`aop`，同样观察 DMP 是否解引用。结果是✅。
 
-### Intel's DMP
+实验结果显示只有第二种情况 DMP 解引用`ptr`，可以推断 DMP 存在一种机制让 `L2 -> L1` 填充时避免扫描填充的 Cache Line。作者取名为"do-not-scan hint"。
 
-作者还测试了 Intel 13代酷睿 CPU 的 DMP，
+### Restrictions
+
+> #### TL;DR
+>
+> DMP 的预解引用机制只在同一 4GB 空间内有效，会忽略最高字节`[63:56]`。
+
+最后，作者还调查了 DMP 解引用时可能的限制。通过精心构造`ptr`的地址和值，作者用一系列实验去推测`ptr`的地址和被解引用地址的关系，结果表明 DMP 只会在地址和指向的数据都在 4GB 对其的区域内时解引用`ptr`；超过这个边界的指针不会被解引用。实验数据见下图。
+
+![](./4gb-align.png)
+
+同时，由于公版ARMv8标准会忽略最高的字节(top byte)，作者也验证了 DMP 也有类似的机制。实验中，作者翻转一个正常指针中的`[63:48]`每一位，然后测量其是否被解引用。结果表明`[55:48]`中的位被翻转后都没有被解引用(即不是合法指针)，`[63:56]`翻转后成功解引用。
+
+Apple 曾申请过一项关于 DMP 预取`ptr`指向数据的周围数据的专利，作者也验证了M1中是否采用了这项专利。结果确认了这一特性的存在。
+
+作者还用[相同的实验](#augury)测试了 Intel 13 代酷睿 CPU 的 DMP 作为对比。Intel 的 DMP 明显保守很多，在后3个情况中(解引用`ptr`和`aop`后续的指针, 解引用单个`ptr`) Intel 的 DMP 均为表现出解引用行为。
 
 ## Proof of Concept
+
+这一节作者使用一个常时间编程(Constant-Time Programming)的经典例子`Constant-Time Swap`函数作为受害者来演示如何利用 DMP 进行侧信道攻击，窃取1bit的密文(secret)。
+
+### Constant-Time Swap
+
+首先简单介绍一下`ct-swap`函数的实现和安全性。最简单的`swap(int *a, int *b)`函数一般长这样
+
+```c
+// secret = 0: no swap; secret = 1: swap
+void swap(int secret, int *a, int *b, size_t len) {
+    int temp;
+    if (secret) for (int i = 0; i < len; ++i) {
+        temp = a[i];
+        a[i] = b[i];
+        b[i] = temp;
+    }
+}
+```
+
+这段代码对于侧信道攻击是非常脆弱的，主要漏洞有二：
+- 其一是`secret`不同代码执行时间不同。如果`secret=0`，这段代码的运行时间几乎是0；否则攻击者可以观测到这段(用户)代码的执行时间
+- 其二与上面类似，当`secret=0`时不会发生访存操作，而`secret=1`时攻击者可以通过缓存侧信道攻击观测到`a[]`和`b[]`的访问
+
+于是人们发明了`Constant-Time Swap`，它长这样：
+
+```c
+// secret = 0: no swap; secret = 1: swap
+void ct-swap(uint64_t secret, uint64_t *a, uint64_t *b, size_t len) {
+    uint64_t delta;
+    uint64_t mask = ~(secret-1);
+    for (size_t i = 0; i < len; i++) {
+        delta = (a[i] ^ b[i]) & mask;
+        a[i] = a[i] ^ delta;
+        b[i] = b[i] ^ delta;
+    }
+}
+```
+
+`mask`巧妙地规避了`secret`的if，因此`secret`的值不影响程序的执行时间和访存行为，一般称这种特性为"secret-independent"。
+
+### Challenges & Compound Eviction Set
+
+
+### Attack
+
+
 
 ## Attacking Cryptographic Implementations
 
@@ -134,6 +197,12 @@ TBD
 
 ## Mitigation
 
+文章粗略地给出了一些缓解措施，这里稍微翻译总结一下
+
+- 
+- 
+- 
+- 
 
 ## Guidance to Duplication
 
@@ -141,5 +210,5 @@ TBD
 > 
 > 需要注意攻击只能在 M1 芯片上进行，但逆向实验可以在 M2/M3 上进行。本人尝试过在 M3 上优化参数 (threshold, cache line size 等) 并成功过一段时间，然后不知为何又寄了。作者发文章后估计也不考虑维护这个代码了，遂作罢。
 
-是的，作者开源了。你可以从 Github 上找到他们的代码并尝试复现他们的实验和攻击，README 写的也非常详细。这里我就粗略地翻译一下。我在同学的 Macbook Air M1 上成功复现过，并打算回国后用宿舍的 Mac mini 再试一次 (至于为什么不ssh，因为宿舍停电然后宕机了)。
+是的，作者开源了。你可以从 [Github](https://github.com/FPSG-UIUC/GoFetch) 上找到他们的代码并尝试复现他们的实验和攻击，README 写的也非常详细。这里我就粗略地翻译一下。我在同学的 Macbook Air M1 上成功复现过，并打算回国后用宿舍的 Mac mini 再试一次 (至于为什么不ssh，因为宿舍停电然后宕机了)。
 

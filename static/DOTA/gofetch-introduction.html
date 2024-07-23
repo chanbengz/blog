@@ -39,29 +39,29 @@
                 <p>Such as, if we use the function shown below to swap values in two arrays, the attacker could easily deduce the secret, because when secret == False, the function would terminate much more quickly than when secret == True.</p>
                 <pre>
                     <code>
-                void swap(boolean secret, int[] a, int[] b, int len) {
-                    if (secret) {
-                        for (int i = 0; i < len; i++) {
-                            int tmp = a[i];
-                            a[i] = b[i];
-                            b[i] = tmp;
-                        }
-                    }
-                }
+void swap(boolean secret, int[] a, int[] b, int len) {
+    if (secret) {
+        for (int i = 0; i < len; i++) {
+            int tmp = a[i];
+            a[i] = b[i];
+            b[i] = tmp;
+        }
+    }
+}
                     </code>
                 </pre>
                 <p>Thus, we should use a constant-time swap function to enhance the system security. ct-swap program is a constant-time swap primitive used in various cryptographic implementations. No matter what value the secret takes, the function would terminate in a constant time.</p>
                 <pre>
                     <code>
-                void ctSwap(boolean secret, int[] a, int[] b, int len) {
-                    int secretInNum = secret ? 1 : 0;
-                    int mask = ~(secret - 1);
-                    for (int i = 0; i < len; i++) {
-                        int delta = (a[i] ^ b[i]) & mask;
-                        a[i] = a[i] ^ delta;
-                        b[i] = b[i] ^ delta;
-                    }
-                }
+void ct-swap(int secret, int[] a, int[] b, int len) {
+    int delta;
+    int mask = ~(secret - 1);
+    for (int i = 0; i < len; i++) {
+        delta = (a[i] ^ b[i]) & mask;
+        a[i] = a[i] ^ delta;
+        b[i] = b[i] ^ delta;
+    }
+}
                     </code>
                 </pre>
 
