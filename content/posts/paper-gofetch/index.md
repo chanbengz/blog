@@ -2,6 +2,7 @@
 title = 'GoFetch: Breaking Constant-Time Cryptographic Implementations Using Data Memory-Dependent Prefetchers'
 date = 2024-07-09T01:17:38+08:00
 draft = false
+math = true
 summary = 'Apple f**ked up. Is it really worthy to trade security off for such little performance gain?'
 categories = ['Security']
 tags = ['Paper', 'Apple', 'Side-Channel']
@@ -119,7 +120,7 @@ DMP 会为 L1 缓存打上已扫描标记。基于前面的实验，作者猜想
 >
 > DMP 的预解引用机制只在同一 4GB 空间内有效，会忽略最高字节`[63:56]`。
 
-最后，作者还调查了 DMP 解引用时可能的限制。通过精心构造`ptr`的地址和值，作者用一系列实验去推测`ptr`的地址和被解引用地址的关系，结果表明 DMP 只会在地址和指向的数据都在 4GB 对其的区域内时解引用`ptr`；超过这个边界的指针不会被解引用。实验数据见下图。
+最后，作者还调查了 DMP 解引用时可能的限制。通过精心构造`ptr`的地址和值，作者用一系列实验去推测`ptr`的地址和被解引用地址的关系，结果表明 DMP 只会在地址和指向的数据都在 4GB 对其的区域内时解引用`ptr`；超过这个边界的指针不会被解引用。实验数据见下图，低位忽略了，xy轴都是高位
 
 ![](./4gb-align.png)
 
@@ -232,7 +233,7 @@ $$ c_2 = c\ \text{mod}\ q $$
 $$ 1 - \frac{1}{2^{576 - n}} \approx 1 $$
 是一个关于 n 的 non-negligible function。因此攻击者是有效的。
 
-因为尾部`ptr`的存在，$p$ 并不能被完全还原。~~（要不然可以直接二分了）~~因此作者提到可以借用 [Coppersmith](https://github.com/mimoo/RSA-and-LLL-attacks?tab=readme-ov-file#factoring-with-high-bits-known) 中还原低位的方法。
+因为尾部`ptr`的存在，$p$ 并不能被完全还原。~~(要不然可以直接二分了)~~ 因此作者提到可以借用 [Coppersmith](https://github.com/mimoo/RSA-and-LLL-attacks?tab=readme-ov-file#factoring-with-high-bits-known) 中还原低位的方法。
 
 ### OpenSSL's DH Key Exchange
 
@@ -261,5 +262,5 @@ TBD
 > 
 > 需要注意攻击只能在 M1 芯片上进行，但逆向实验可以在 M2/M3 上进行。本人尝试过在 M3 上优化参数 (threshold, cache line size 等) 并成功过一段时间，然后不知为何又寄了。作者发文章后估计也不考虑维护这个代码了，遂作罢。
 
-是的，作者开源了(难道不是因为四大强制要求开源吗)。你可以从 [Github](https://github.com/FPSG-UIUC/GoFetch) 上找到他们的代码并尝试复现他们的实验和攻击，README 写的也非常详细。这里我就粗略地翻译一下。我在同学的 Macbook Air M1 上成功复现过，并打算回国后用宿舍的 Mac mini 再试一次 (至于为什么不ssh，因为宿舍停电然后宕机了)。
+是的，作者开源了(难道不是因为四大强制要求开源吗)。你可以从 [Github](https://github.com/FPSG-UIUC/GoFetch) 上找到他们的代码并尝试复现他们的实验和攻击，README 写的也非常详细。这里我就粗略地翻译一下。我在同学的 Macbook Air M1 上成功复现过，并打算回国后用宿舍的 Mac mini M1 再试一次 (至于为什么不ssh，因为宿舍停电然后宕机了)。
 
