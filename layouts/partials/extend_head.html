@@ -1,3 +1,4 @@
+<!-- favicon -->
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -6,9 +7,11 @@
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
 
+<!-- Traffic -->
 <script async defer src="https://umami-bens.vercel.app/script.js" data-website-id="07d2031a-8f6c-4349-9e73-00cbe8aaca29"></script>
 <script async defer src="https://cloud.umami.is/script.js" data-website-id="c04dd2ec-4491-49e2-93de-4ab57346fe82"></script>
 
+<!-- Math -->
 {{ if or .Params.math .Site.Params.math }}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
 <!-- The loading of KaTeX is deferred to speed up page rendering -->
@@ -17,7 +20,7 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
     onload="renderMathInElement(document.body);"></script>
 
-<!-- for inline -->>
+<!-- For inline -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     renderMathInElement(document.body, {
