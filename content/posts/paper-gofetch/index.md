@@ -16,8 +16,6 @@ tags = ['Paper', 'Apple', 'Side-Channel']
 
 参加 NUS 的夏令营时选择了这篇论文的复现+可视化+防御作为项目[^NUS SWS3011 DOTA]。~~项目本身非常trivial就不在这献丑了~~。这个侧信道攻击非常巧妙，但由于非常新颖，简中互联网暂时没有这篇文章的解读，于是决定尝试以本人浅薄的理解来解读一下。本文并不是翻译，而是对论文的解读，所以可能会有一些错误和论文中没有提到的内容。如果有错误，欢迎指正。
 
-由于时间有限且本人太菜，针对密码的攻击部分这里只介绍RSA-2048，后续有空再补充（ ~~开摆~~
-
 [^NUS SWS3011 DOTA]: NUS SoC 的课程 SWS3011 Defense of The Ancient，主讲教授是 Prof. Norman Hugh Anderson，主要介绍计算机安全的基础知识和技术。队友做的可视化网站链接: [DOTA/gofetch-introduction](https://chanbengz.github.io/DOTA/gofetch-introduction.html)，repo 地址: [Ray0v0/DOTA_WebPage](https://github.com/Ray0v0/DOTA_WebPage)
 
 ## Introduction
@@ -200,7 +198,7 @@ void ct-swap(uint64_t secret, uint64_t *a, uint64_t *b, size_t len) {
 
 ## Attacking Cryptographic Implementations
 
-这一节作者介绍了实际场景下的 lib 被 GoFetch 攻击的场景，包括 Go's RSA-2048, OpenSSL's DH Key Exchange, Kyber 和 Dilithium。基本原理和上一节相同。这里只介绍 Go's RSA-2048 的攻击，其他的后续有空再补充。
+这一节作者介绍了实际场景下的 lib 被 GoFetch 攻击的场景，包括 Go's RSA-2048, OpenSSL's DH Key Exchange, Kyber 和 Dilithium。基本原理和上一节相同。
 
 ### Go's RSA-2048
 
@@ -235,9 +233,42 @@ $$ 1 - \frac{1}{2^{576 - n}} \approx 1 $$
 
 因为尾部`ptr`的存在，$p$ 并不能被完全还原。~~(要不然可以直接二分了)~~ 因此作者提到可以借用 [Coppersmith](https://github.com/mimoo/RSA-and-LLL-attacks?tab=readme-ov-file#factoring-with-high-bits-known) 中还原低位的方法。
 
-### OpenSSL's DH Key Exchange
+### OpenSSL's DHKE
 
-TBD
+Diffie-Hellman Key Exchange 大家也都知道了。问题在于受害者(server)在计算共享密钥时，也会像RSA一样分布计算，即收到攻击者(client)的公钥$c$后，用自己的密钥$s$计算
+
+$$ c^s\ \text{mod}\ p $$
+
+然后为加速这一幂模运算，利用蒙哥马利乘法(Montgomery Multiplication)，将$s$分为大小为$w$-bit的块$s = s_0 || s_1 || ... || s_{k-1}$，然后计算
+
+$$ c^{s_0 || s_1 || ... || s_{k-1}}\ \text{mod}\ p $$
+
+代码实现如下:
+
+```c
+// tmp = c^(s0)
+while (bits > 0) {
+    for (i = 0; i < w; i++) {
+        if (!bn_mul_mont_fixed_top(&tmp, &tmp, &tmp, mont, ctx)) goto err;
+        bits -= w;
+        tmp = tmp * c^(si)
+    }
+}
+```
+
+问题出在这里，如果猜中了第$i$个块，那么`tmp`会被解引用，从而激活 DMP。攻击者可以通过构造恶意的公钥$c$来使得`tmp`包含`ptr`。要构造$c$，需要解
+
+$$ (c^{s_0 || s_1 || ... || s_{i-1}})^{2^w}\cdot R \equiv \verb|tmp|\ \text{mod}\ p $$
+
+记上面这一长串指数为
+
+$$ E = (s_0 || s_1 || ... || s_{i-1}) \cdot 2^w $$
+
+那么攻击者可以构造$c$为
+
+$$ c = (\verb|tmp|\cdot R^{-1})^{E^{-1}}\ \text{mod}\ p $$
+
+这样攻击者就可以通过观测Probe Set的访问时间来推断$s_{i-1}$的值是否正确。此时由于$E$的特殊性，攻击者需要调整`tmp`的值来使得$\verb|tmp|\cdot R^{-1}$是可以被开n次二次根式的。`tmp`只需要包括一个`ptr`然后剩余的位用于调整即可。
 
 ### Kyber
 
