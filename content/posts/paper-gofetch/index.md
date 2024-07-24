@@ -172,16 +172,67 @@ void ct-swap(uint64_t secret, uint64_t *a, uint64_t *b, size_t len) {
 
 ### Challenges & Compound Eviction Set
 
+进行 GoFetch 攻击需要满足一下前提:
+- 选择输入攻击(Chosen-Input Attack)，即攻击者可以控制受害者的（部分）输入
+- 构造 DMP 的触发条件，即攻击者需要使得当满足预期条件的时候 DMP 会触发，不满足则不触发。例如`ct-swap`中，攻击者需要持续驱逐`a`而不驱逐`b`
+- 解决内存空间不一致的问题，即由于攻击者和受害者不共享内存，需要改用 Prime&Probe 而不是 Flush&Reload。实现上，只需要生成`ptr`目标内存的驱逐集即可
+- 解决计时器精度问题，即由于攻击者跑在用户态下，无法调用系统的 Performance Counter，且时间戳精度不够，故需要攻击者自己提供一个高精度计数器。作者通过创建一个独立的计数器线程，在一个紧密的循环中持续增加一个共享变量
+
+难点在于生成一个满足上述第二、三条件的驱逐集，原因在于`a`的地址不可知。为解决这个问题，作者提出了一种新的驱逐集生成策略，作者称为复合驱逐集(Compound Eviction Set)。生成策略如下:
+1. 生成一个标准的驱逐集，然后找出所有能驱逐`ptr`目标内存的驱逐集EV_ptr
+2. 将`ptr`输入给受害者的`a`和`b`，使其无论`secret`的值都会访问`ptr`
+3. 用 EV_ptr 填充 Cache，然后遍历所有可能的 EV_a，此时受害者也在访问`a`和`b`
+4. 测量 EV_ptr 的访问时间，找到使得 EV_ptr 未命中的 EV_a
+5. 由于 EV_a 能驱逐`a`，所以 EV_ptr 的访问时间是 L2 Miss
+6. 于是成功生成一个复合驱逐集(EV_a, EV_ptr)
 
 ### Attack
 
+有了驱逐集，攻击者就可以开始实施攻击。攻击者会启动三个进程:
+- 计时器进程，用来测量 Probe Set 的访问时间
+- 驱逐进程，用于一直遍历 EV_a 和 EV_ptr
+- 探测进程，用于探测 Probe Set 的访问时间
 
+由于`ptr`在`b`中已经解引用过一次，被 EV_ptr 驱逐后由于"do-not-scan hint"的存在并不会二次解引用。同时因为`a`不在 L2 之中只有当`ptr`从`b`到`a`的时候，`ptr`会被解引用，其指向的内存也即 Probe Set 可以被攻击者探测到 L2 Hit。攻击者测量访问延迟结果如下
+
+![](./ctswap-result.png)
 
 ## Attacking Cryptographic Implementations
 
+这一节作者介绍了实际场景下的 lib 被 GoFetch 攻击的场景，包括 Go's RSA-2048, OpenSSL's DH Key Exchange, Kyber 和 Dilithium。基本原理和上一节相同。这里只介绍 Go's RSA-2048 的攻击，其他的后续有空再补充。
+
 ### Go's RSA-2048
 
+RSA 大家都知道了，那么问题在哪呢？~~小编带大家来看看~~ 问题出在 RSA 的 CRT 加速解密上。由原始的解密
 
+$$ m \equiv c^d\ \text{mod}\ N $$
+
+变为计算
+
+$$ D_p = e^{-1}\ \text{mod}\ (p - 1) $$
+$$ D_q = e^{-1}\ \text{mod}\ (q - 1) $$
+
+然后解密
+
+$$ m_1 = c^{D_p}\ \text{mod}\ p $$
+$$ m_2 = c^{D_q}\ \text{mod}\ q $$
+
+(剩下的就先忽略吧) 然后上面这俩幂运算首先要
+
+$$ c_1 = c\ \text{mod}\ p $$
+$$ c_2 = c\ \text{mod}\ q $$
+
+所以这个式子隐藏了一个侧信道信息，假设攻击者构造恶意包括指针的密文(如下图):
+- 如果 $c < p$, $c_1 = c$ 然后访问$c_1$会激活 DMP
+- 如果 $c \geq $, $c_1 = c - kp$ 然后 $c_1$ 以极大的概率(因为不确定是否包含指针)不会激活 DMP
+
+![](./rsa-extract-p.png)
+
+对于前面的$n-1$位都与$p$一致的情况下，考虑第$n$位，由于高位都一致，第$n$位马上就能决定$c$和$p$的大小关系。攻击者可以随意设置这一位，然后观测 DMP 的启动情况（当然考虑到噪声影响可以都试一试）。攻击者成功的概率是(回顾一下密码学)
+$$ 1 - \frac{1}{2^{576 - n}} \approx 1 $$
+是一个关于 n 的 non-negligible function。因此攻击者是有效的。
+
+因为尾部`ptr`的存在，$p$ 并不能被完全还原。~~（要不然可以直接二分了）~~因此作者提到可以借用 [Coppersmith](https://github.com/mimoo/RSA-and-LLL-attacks?tab=readme-ov-file#factoring-with-high-bits-known) 中还原低位的方法。
 
 ### OpenSSL's DH Key Exchange
 
@@ -198,11 +249,11 @@ TBD
 ## Mitigation
 
 文章粗略地给出了一些缓解措施，这里稍微翻译总结一下
-
-- 
-- 
-- 
-- 
+- 换用能效核(Efficiency Core)，因为 DMP 只在性能核上启用(好简单粗暴，但是这样会影响性能)
+- 盲化(Blinding)，即用遮罩(mask)掩盖指针，使 DMP 不会解引用 
+- 特殊方法(Ad-Hoc)，即在输入时检查，防止恶意指针注入
+- 硬件支持，例如[禁用DMP](https://social.treehouse.systems/@marcan/112238385679496096)
+- (我想的) 做缓存侧信道攻击检测，因为攻击者仍采用了传统的 Prime&Probe 方法
 
 ## Guidance to Duplication
 
@@ -210,5 +261,5 @@ TBD
 > 
 > 需要注意攻击只能在 M1 芯片上进行，但逆向实验可以在 M2/M3 上进行。本人尝试过在 M3 上优化参数 (threshold, cache line size 等) 并成功过一段时间，然后不知为何又寄了。作者发文章后估计也不考虑维护这个代码了，遂作罢。
 
-是的，作者开源了。你可以从 [Github](https://github.com/FPSG-UIUC/GoFetch) 上找到他们的代码并尝试复现他们的实验和攻击，README 写的也非常详细。这里我就粗略地翻译一下。我在同学的 Macbook Air M1 上成功复现过，并打算回国后用宿舍的 Mac mini 再试一次 (至于为什么不ssh，因为宿舍停电然后宕机了)。
+是的，作者开源了(难道不是因为四大强制要求开源吗)。你可以从 [Github](https://github.com/FPSG-UIUC/GoFetch) 上找到他们的代码并尝试复现他们的实验和攻击，README 写的也非常详细。这里我就粗略地翻译一下。我在同学的 Macbook Air M1 上成功复现过，并打算回国后用宿舍的 Mac mini 再试一次 (至于为什么不ssh，因为宿舍停电然后宕机了)。
 
