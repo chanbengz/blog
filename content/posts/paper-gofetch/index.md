@@ -128,7 +128,7 @@ DMP 会为 L1 缓存打上已扫描标记。基于前面的实验，作者猜想
 
 Apple 曾申请过一项关于 DMP 预取`ptr`指向数据的周围数据的专利，作者也验证了M1中是否采用了这项专利。结果确认了这一特性的存在。
 
-作者还用[相同的实验](#augury)测试了 Intel 13 代酷睿 CPU 的 DMP 作为对比。Intel 的 DMP 明显保守很多，在后3个情况中(解引用`ptr`和`aop`后续的指针, 解引用单个`ptr`) Intel 的 DMP 均为表现出解引用行为。
+作者还用[相同的实验](#data-access-pattern)测试了 Intel 13 代酷睿 CPU 的 DMP 作为对比。Intel 的 DMP 明显保守很多，在后3个情况中(解引用`ptr`和`aop`后续的指针, 解引用单个`ptr`) Intel 的 DMP 均为表现出解引用行为。
 
 ## Proof of Concept
 
