@@ -71,6 +71,8 @@ params:
       url: "https://t.me/z4grus"
     - name: email
       url: "mailto:chanben04gz@gmail.com"
+    - name: rss
+      url: "/index.xml"
 
   cover:
     hidden: true # hide everywhere but not in structured data
@@ -79,11 +81,10 @@ params:
 
   editPost:
     URL: "https://github.com/chanbengz/chanbengz.github.io/blob/main/content"
-    Text: "Suggest Changes" # edit text
-    appendFilePath: true # to append file path to Edit link
+    Text: "Suggest Changes"
+    appendFilePath: true
 
-  # for search
-  # https://fusejs.io/api/options.html
+  # search
   fuseOpts:
     isCaseSensitive: false
     shouldSort: true
@@ -91,7 +92,7 @@ params:
     distance: 1000
     threshold: 0.4
     minMatchCharLength: 0
-    limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
+    limit: 10
     keys: ["title", "permalink", "summary", "content"]
 
 # menu on right top
@@ -118,7 +119,6 @@ menu:
       url: /about/
       weight: 50
 
-# Read: https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#using-hugos-syntax-highlighter-chroma
 pygmentsUseClasses: true
 markup:
   goldmark:
@@ -129,10 +129,8 @@ markup:
     codeFences: true
     guessSyntax: true
 
-# search options
 outputs:
-    home:
-        - HTML
-        - RSS
-        - JSON
-
+  home:
+    - HTML
+    - RSS
+    - JSON
