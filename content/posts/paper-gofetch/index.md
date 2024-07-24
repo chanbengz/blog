@@ -18,11 +18,11 @@ tags = ['Paper', 'Apple', 'Side-Channel']
 
 由于时间有限且本人太菜，针对密码的攻击部分这里只介绍RSA-2048，后续有空再补充（ ~~开摆~~
 
-[^NUS SWS3011 DOTA]: NUS SoC 的课程 SWS3011 Defense of The Ancient，主讲教授是 Prof. Norman Hugh Anderson，主要计算机安全的基础知识和技术。队友做的可视化网站链接: [DOTA/gofetch-introduction](https://chanbengz.github.io/DOTA/gofetch-introduction.html)，repo 地址: [Ray0v0/DOTA_WebPage](https://github.com/Ray0v0/DOTA_WebPage)
+[^NUS SWS3011 DOTA]: NUS SoC 的课程 SWS3011 Defense of The Ancient，主讲教授是 Prof. Norman Hugh Anderson，主要介绍计算机安全的基础知识和技术。队友做的可视化网站链接: [DOTA/gofetch-introduction](https://chanbengz.github.io/DOTA/gofetch-introduction.html)，repo 地址: [Ray0v0/DOTA_WebPage](https://github.com/Ray0v0/DOTA_WebPage)
 
 ## Introduction
 
-这篇论文介绍了一种针对 Apple M 系列芯片的侧信道攻击，被研究者取名为 GoFetch。不同于以往的基于共享缓存的侧信道攻击，GoFetch 利用的是Data Memory-dependent Prefetcher (DMP)，即数据相关的预取器。由于 DMP 会根据数据的访问模式和地址特征来预取数据，甚至会预解引用数据，因此会造成缓存访问的时间差异，从而导致侧信道攻击。DMP 相关的侧信道攻击并不是很新的概念，但是 Apple 的 DMP 策略非常激进，导致侧信道攻击的成功率非常高。这个漏洞甚至可以用来攻击 Constant-Time 的算法。论文中，作者详细介绍了 Apple M 芯片的 DMP 策略和他们逆向过程与结果，并提出了 GoFetch 攻击原理和4中不同的攻击场景。最后，作者还提出了一些缓解措施。
+这篇论文介绍了一种针对 Apple M 系列芯片的侧信道攻击，被研究者取名为 GoFetch。不同于以往的基于共享缓存的侧信道攻击，GoFetch 利用的是Data Memory-dependent Prefetcher (DMP)，即数据相关的预取器。DMP 会根据数据的访问模式和地址特征来预取数据，甚至会预解引用指针，因此会造成缓存访问的时间差异，从而导致侧信道攻击。DMP 相关的侧信道攻击并不是很新的概念，但 Apple 的 DMP 策略非常激进，导致侧信道攻击的成功率非常高。这个漏洞甚至可以用来攻击 Constant-Time 实现的密码学算法。论文中，作者详细介绍了 Apple M 芯片的 DMP 策略和他们逆向过程与结果，并提出了 GoFetch 攻击原理和4种不同的攻击场景。
 
 ## Background
 
@@ -30,7 +30,7 @@ tags = ['Paper', 'Apple', 'Side-Channel']
 
 ### Cache & Prefetcher
 
-Cache (高速缓存) 是一种处理器内部组件。在架构设计中，Cache 是介于处理器核心和内存之间的处理单元，用来存放最近访问的数据和指令，以减少内存访问的时间。Cache 通常分为 L1, L2, L3 多级，L1 容量最小且最快，L3 容量最大且最慢。Cache 的原理基于时间局部性，即被访问过的数据很可能会在不久之后再次被访问，与空间局部性，即被访问过的数据附近的数据也很可能会被访问 (比如数组)。现代超标量处理器的瓶颈之一就是缓存/内存访问延迟，因此缓存设计和优化是非常重要的。目前几乎所有的 Cache 都使用组相联(Set-Associative)的方式来实现, 如下图。详细内容请前往大佬的文章[计算机体系结构-cache高速缓存](https://zhuanlan.zhihu.com/p/482651908)
+Cache (高速缓存) 是一种处理器内部组件。在架构设计中，Cache 是介于处理器核心和内存之间的处理单元，用来存放最近访问的数据和指令，以减少内存访问的时间。Cache 通常分为 L1, L2, L3 多级，L1 容量最小且最快，L3 容量最大且最慢。Cache 的原理基于时间局部性，即被访问过的数据很可能会在不久之后再次被访问，与空间局部性，即被访问过的数据附近的数据也很可能会被访问 (比如数组)。现代超标量处理器的瓶颈之一就是缓存/内存访问延迟，因此缓存设计和优化是非常重要的。目前几乎所有的 Cache 都使用组相联(Set-Associative)的方式来实现, 如下图。详细内容请前往[计算机体系结构-cache高速缓存](https://zhuanlan.zhihu.com/p/482651908)
 
 ![](./cache.png)
 
@@ -48,9 +48,9 @@ Prefetcher (预取器) 是一种硬件机制，用来预测未来可能会访问
 [^2]: 来自 UCR 的 [Zhiyun Qian (钱志云)](https://www.cs.ucr.edu/~zhiyunq/) 老师的研究: [CVE-2016-5696](https://nvd.nist.gov/vuln/detail/CVE-2016-5696)
 [^4]: 为保证这个数据确实是近期访问而不是历史遗留，攻击者通常会在攻击前清空 Cache, 这个过程叫做 flush, prime, 或者 evict。flush 和 prime 的时间差是相反的。
 
-### Apple M-series Chip
+### Apple Silicon
 
-> Apple M 系列是苹果自研的 ARM 芯片，从自家的 A 系列发展而来，与公版架构的 ARM 没啥关系。
+> Apple M 系列是苹果自研的 ARM 芯片，从自家的 A 系列发展而来，与公版架构的 ARM 没啥关系，也因此领先公版至少两个版本(没有数据来源)
 
 加入虚拟内存设计后，由于 MMU 地址转换的延迟太大，实际设计中 Cache 通常采用 VIPT (Virtual Index Physical Tag) 作为命中判断，即先通过虚拟地址推断缓存命中，再通过物理地址解决重名问题。这种设计简化了缓存侧信道的复杂度，因为攻击者可以推断受害者的虚拟地址并生成驱逐集(Eviction Set)和探测集(Probe Set)。
 
