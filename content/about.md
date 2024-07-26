@@ -3,46 +3,46 @@ title: 'About'
 layout: "about"
 url: "/about/"
 summary: about
+math: true
 ---
 
 ## $ whoami
 
-I'm Ben Chen (陈贲), currently an undergraduate student at [Southern University of Science and Technology](https://www.sustech.edu.cn/), majoring in Computer Science and Technology, focusing on System Security in [COMPASS Lab](https://compass.sustech.edu.cn/), advised by [Prof. Fengwei Zhang](https://fengweiz.github.io/).
+I'm Ben Chen (陈贲), currently a full-time undergraduate at [Southern University of Science and Technology](https://www.sustech.edu.cn/), majoring in Computer Science and Technology, focusing on System Security in [COMPASS Lab](https://compass.sustech.edu.cn/), advised by [Prof. Fengwei Zhang](https://fengweiz.github.io/).
 
 A CTFer, playing for [COMPASS CTF](https://wiki.compass.college) and H4aG4au. Good at **Web**, **Misc** and **Crypto**.
 
 ## $ cat /etc/nicknames
 
-In formal situation, I go by the name Ben Chen or CHEN Ben. In other cases, you can find me by Ben, B3N, z3grus, Ben Chan, chanbengz.
+In formal situation, I go by the name Ben Chen or CHEN Ben. In other cases, you can find me by Ben, B3N, Ben Chan, chanbengz, z3grus or Zagreus Hadeson.
 
 ## $ cat /etc/friends
 
-Waiting for you to fill in.
+[Roderick Tianrun Qiu](https://r-q.name/)
+
+and ... you!
 
 ## $ ls -l /usr/bin
 
 ### Security
 
 Penetration Testing
-- Web, Network, OS, Mobile, Persistence, Social Engineering, Virus/Malware
+- Web, Network, OS, Mobile, Privilege Persistence, Social Engineering, Virus/Malware
 - Source Code Audit, Malware Analysis, Traffic Analysis
 - Security Response, Incident Handling, Forensics
 
-Research[Learning]
-- Kernel Exploitation/Programming, Side-Channel
+Research [Learning]
+- Kernel Exploitation/Programming, Side-Channel/Crypto
 
 ### Development
 
-Hardware Development
-- Verilog, SystemVerilog, Chisel
+Hardware: Verilog/SystemVerilog, Chisel
 
-Software Development
-- C/C++, Python, Java, Rust
+Software: C/C++, Python, Java, Rust
 
-#### Tools
-
+Tools
 - Web: Burp Suite, Nmap, Wireshark, Metasploit, SQLMap, Hydra, Dirsearch, ...
-- Crypto: GnuPG, OpenSSL, Hashcat, John the Ripper
+- Crypto: GnuPG, OpenSSL, Hashcat, John the Ripper, ...
 - Debug: GDB, IDA Pro, Ghidra, Radare2, Jadx, Frida
 - Text: Vim/Neovim, $\LaTeX$, Markdown, Typst
 - VC: Git, LazyGit, Github/Gitlab
@@ -57,4 +57,4 @@ Software Development
 
 ### Notes
 - [CS Notes @SUSTech](https://github.com/chanbengz/SUSTech_CS_Notes): Course notes and materials during my undergraduate study at SUSTech, mainly for computer science.
-- [WriteUps for CTF](https://github.com/chanbengz/CTF_Writeups): Collection of my personal writeups (aka solutions) for CTF challenges. I will also post them on my blog.
+- [Write Up for CTF](https://github.com/chanbengz/CTF_Writeups): Collection of my personal writeups (aka solutions) for CTF challenges. I've also post them on the blog.
