@@ -1,10 +1,11 @@
 +++
 title = 'CISCN 2024 Quals Writeup By COMPASS'
 date = 2024-05-19T19:00:00+08:00
-draft = false
 tags = ['CISCN', 'Writeup']
 categories = ['CTF']
 summary = "Why not forbid PY? Hack for fun not for profit."
+draft = false
+math = true
 +++
 
 
@@ -337,7 +338,7 @@ int main()
 
 flag: `flag{188cba3a5c0fbb2250b5a2e590c391ce}`
 
-﻿### whereThel1b
+### whereThel1b
 
 经过观察，不难发现，只改变输入的某一位的情况下，输出也只会有其中的一两位发生变化：
 

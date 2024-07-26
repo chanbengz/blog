@@ -20,6 +20,8 @@ In formal situation, I go by the name Ben Chen or CHEN Ben. In other cases, you 
 
 [Roderick Tianrun Qiu](https://r-q.name/)
 
+[Zhuo Wang](https://we-are-zed.github.io/)
+
 and ... you!
 
 ## $ ls -l /usr/bin
