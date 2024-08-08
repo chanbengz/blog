@@ -91,6 +91,8 @@ cipher = [plain[i] + key[i % len(key)] % 26 for i in range(len(plain))]
 - $Enc$ 加密明文$m$得到密文$c \leftarrow Enc_k(m)$
 - $Dec$ 解密密文$c$得到明文$m^{\prime} \leftarrow Dec_k(c)$
 
+正确性：$m = m^{\prime}$ ，即 $Dec_k(Enc_k(m)) = m$。
+
 ### Formal Definition
 
 这里先略过之前不完美的安全性定义，直接介绍目前最严格的安全性定义。
@@ -176,7 +178,12 @@ $$ Pr[PrivK_{A, \Pi}(n) = 1] \leq \frac{1}{2} + \epsilon(n) $$
 
 ### Multiple-message Indistinguishability
 
-TBD
+现实中的消息可能不止一条，因此我们需要定义多条消息的安全性。类似地，我们可以定义多条消息的完美安全性
+1. $A(1^n)$ 生成两个明文向量 $(m_{0, 0}, m_{0, 1}, \ldots, m_{0, t})$ 和 $(m_{1, 0}, m_{1, 1}, \ldots, m_{1, t})$
+2. $b \leftarrow_R \lbrace 0, 1 \rbrace$ 随机选择明文，生成密钥和密文 $k \leftarrow Gen(1^n), c_i \leftarrow Enc_k(m_{b, i})$
+3. $A(c_0, c_1, \ldots, c_t)$ 攻击者输出一个bit $b^{\prime}$，如果$b = b^{\prime}$则实验成功并输出$1$，否则输出$0$
+
+如果对于所有的多项式时间的算法$A$，存在一个可忽略函数$\epsilon(n)$，使得实验成功的概率至多是$1 / 2 + \epsilon(n)$，那么我们称这个加密方案是multiple-message indistinguishable。
 
 ## Pseudorandomness
 
@@ -217,6 +224,20 @@ $$ |Pr_{k \leftarrow U_n}[D^{F_k(\cdot)}(1^n) = 1] - Pr_{f \leftarrow Func_n}[D^
 $$ F_k^{-1}(F_k(x)) = x $$
 
 如果 PRP 存在，那么 PRF 也存在，因为 PRF 是 PRP 的子集。同样，如果 PRF 存在，那么 PRG 也存在。这个证明很简单，即可以构造 $G(k) = F_k(1^n)$。
+
+### Security of Pseudo OTP
+
+有了伪随机数发生器，我们可以输入一个任意长度的密钥作为种子，然后生成OTP需要的密钥，这样就可以解决密钥长度问题。唯一的问题是要证明这个由伪随机数生成器构造的 OTP 方案是EAV-Secure的。
+
+这个证明非常简单，可以用反证法[^13]证明。假设Pseudo-OTP不是EAV-Secure的，那么就存在一个多项式时间的算法$A$，使得
+$$ |Pr[A(m \oplus G(U_n) = 1] - Pr[A(U_{p(n)}) = 1]| > \epsilon(n) $$
+
+那么就可以构造一个distinguisher $D(k) = A(k \oplus m)$，因为$A$能有效辨别密文和对应明文，这里$k$表示随机数生成器的输出。那么就有
+$$ Pr[D(G(U_n)) = 1] - Pr[D(U_{p(n)} \oplus m) = 1] > \epsilon(n) $$
+
+显然有$U_{p(n)} \equiv U_{p(n)} \oplus m$，因为二者都是均匀分布的，这使得$D$可以区分均匀分布和PRG生成的分布，这违背了PRG的定义。
+
+[^13]: 这种证明方法以后还会经常遇到，比如证明两次哈希的安全性。
 
 ## Private-Key Encryption
 
@@ -435,6 +456,23 @@ $$ n \approx \sqrt{2H \ln \frac{1}{1 - \epsilon}} $$
 
 这个结构叫做Merkle Tree。构造出来的哈希函数$H: \lbrace 0, 1 \rbrace^* \rightarrow \lbrace 0, 1 \rbrace^n$，其中$n$是基本哈希函数的输出长度，是抗碰撞的，证明可由$h$的抗碰撞性质推导。
 
+### Random Oracle
+
+理想中，密码学家们希望构造这么一个确定性的黑盒，使得对于任何输入都能均匀随机地输出，然后就可以用于证明应用这个黑盒的加密方案的安全性。这个黑盒被称为随机预言机(Random Oracle)。还是过一下定义
+- 选择一个均匀的哈希函数$H$，作为实验的一部分
+- 攻击者只能询问这个函数，而不能逆向它
+- 模拟实验，证明（使用了RO模型的）加密方案的安全性
+
+这个模型也有好有坏，好处在于
+- 目前没有已知的能攻击RO模型加密方案的攻击
+- 如果这个方案不安全，直接换一个哈希函数就行
+- 证明的安全性是严格的
+
+但是坏处也很明显
+- 理论上的模型，实际上很难找到一个真正的随机函数
+- 有些方案在RO模型下是安全的，但在实际中因为哈希的实现问题而不安全
+- 容易被滥用（比如懒得设计一个复杂的方案，直接用RO）
+
 ## Public-Key Encryption
 
 对称密码学的一个问题是密钥交换，即如何在被窃听的信道上交换密钥，这个问题可以通过公钥密码学(Public-Key Cryptography)解决。王老师在课上只详细介绍了RSA、ElGamal和Diffie-Hellman三种方案。目前公钥密码学的安全性是基于数论问题的，比如大素数分解、离散对数问题等。还有一些后量子密码学的方案，比如Lattice-based Cryptography（格密码)，这门课就没有涉及。
@@ -461,15 +499,40 @@ $$ n \approx \sqrt{2H \ln \frac{1}{1 - \epsilon}} $$
 $$ P_3 = \lbrace \langle 1, 2, 3 \rangle, \langle 1, 3, 2 \rangle, \langle 2, 1, 3 \rangle, \langle 2, 3, 1 \rangle, \langle 3, 1, 2 \rangle, \langle 3, 2, 1 \rangle \rbrace $$
 定义置换群(Permutation Group) $P_n$的二元运算$\circ$为两个置换的复合，即$\sigma \circ \tau = \sigma(\tau(i))$，则$P_n$是一个群。不过$P_n$不是一个阿贝尔群。例如$\sigma = \langle 3,2,1 \rangle, \tau = \langle 1,3,2 \rangle$，则$$\sigma \circ \tau = \langle 2,1,3 \rangle \neq \langle 1,2,3 \rangle = \tau \circ \sigma$$
 
-TBD
+TBD 等一个抽代大神教教
 
 ### Trapdoor Function
 
-TBD
+因为广播公钥的需求会导致一定的信息泄漏，现在的公钥密码学都基于单向陷门函数(Trapdoor Function)来维持安全性。单向，即只能正着算，陷门，即不能反着算。
+> **Definition 10.1** 一个双射(one-to-one)函数$f \in \mathcal{F}$是一个是Trapdoor Function，要满足以下性质：
+> - Generation: 要有一个PPT算法$Gen$，接受$1^n$，输出$(f, f^{-1})$
+> - Efficient: $f$和$f^{-1}$都是多项式时间可计算的，还必须是均匀输出的
+> - One-wayness: 对于任意多项式时间算法$A$，存在一个可忽略函数$\epsilon(n)$，使得
+>  $$ Pr_{(f,f^{-1}) \leftarrow_R G(1^n), x \leftarrow_R S_f}[A(1^n, f, f(x)) = x] \leq \epsilon(n) $$
+> 即难以反向计算$f$的逆函数$f^{-1}$
+
+所以可以从Trapdoor Function的定义出发来设计公钥密码学方案。比如有一个简单的例子，Rabin's Trapdoor Function，即
+- $Gen$: 选择两个随机数$p, q$，他们都$x \equiv 3\ \mod\ 4$，计算$n = pq$，输出$(pk = n, sk = (p, q))$
+- $Enc$: 对于一个消息$m$，计算$c = m^2 \mod n$
+- $Dec$: 对于一个密文$c$，计算$m = c^{(p+1)\backslash{4}} \mod p$ 或 $m = c^{(q+1)\backslash{4}} \mod q$，然后通过CRT算法计算$m$
+
+我们需要证明破解这个方案唯一的方法是分解$n$，即整数分解问题。这个证明略过。
 
 ### RSA
 
-TBD
+RSA 的方案设计
+- $Gen$: 随机生成两个大素数$p, q$，计算$n = pq$，然后选择一个$e$使得$gcd(e, \phi(n) = 1$，计算$d = e^{-1} \mod \phi(n)$，输出$(pk = (n, e), sk = (n, d))$
+- $Enc$: 对于一个消息$m$，计算$c = m^e \mod n$
+- $Dec$: 对于一个密文$c$，计算$m = c^d \mod n$
+
+然后过一下安全性证明，RSA 是一个Trapdoor Function
+- Forward: Key 是 $(n, e)$，那么 $f(m) = m^e \mod n$ 是一个单向函数
+- Backward: Key 是 $(n, d)$，$ed = 1 \mod \phi(n)$ 是一个困难问题，难以计算 $f^{-1}(c)$
+- Assumption: RSA 的安全性基于这个Trapdoor Function，强于整数分解问题
+
+破解RSA首先要计算$\phi(N)$，但是$phi(N) = (p-1)(q-1)$，也即要分解$N$。这个问题(目前)是一个困难问题。
+
+$\Rightarrow$ 不过还有一些破解思路，如Pollard's p-1, 低指数广播攻击等可以分解$N$；也有一些比如共模攻击等可以在不分解$N$的情况下还原明文。
 
 ### El-Gamal
 
@@ -481,13 +544,26 @@ TBD
 
 ### Padding Scheme
 
-回顾前面的"确定性"加密方案不是CPA安全的，但是目前所有介绍的加密方案都是确定性的。块密码可以引入IV来增加随机性，而公钥密码类似的概念是填充方案(Padding Scheme)。原来公钥密码是不需要填充的，引入填充即增加了随机性，又使得明文长度与密钥长度一致，这样就可以保证安全性[^10][^11]。本节只简单介绍PKCS#1 v1.5 #2 v1.0 和 OAEP填充方案。
+显然，由于公钥广播会导致信息泄漏，所以公钥密码学一定不是完美安全的。不过好消息是，由于广播公钥相当于开盒了加密模型(Encryption Oracle)，我们只需要关注CPA安全性。公钥密码学的CPA安全实验和对称密码学的CPA安全实验基本一致，只是多了给攻击者公钥的步骤。
 
+回顾前面的"确定性"加密方案不是CPA安全的，但是目前所有介绍的加密方案都是确定性的。块密码可以引入IV来增加随机性，而公钥密码类似的概念是填充方案(Padding Scheme)。原来公钥密码是不需要填充的，引入填充即增加了随机性，又使得明文长度与密钥长度一致，这样就可以保证安全性[^10]。本节只简单介绍PKCS#1 OAEP填充方案。
+
+PKCS#1 v1.5 只是简单地在明文前面填充一些随机数与其长度信息，但是这个方案只有在明文比较短的时候才安全，因此引入了OAEP填充方案。
+
+OAEP 的填充采用了PRG和Hash函数，将明文$m$填充为$m^{\prime} = s || t$，流程和Feistel Network类似，即
+$$ s = (m || 0^k) \oplus G(r) $$
+$$ t = H(s) \oplus r $$
+
+这里$r$是随机数，$k$是公钥的一部分。
+
+解填充只需先计算出$r = t \oplus H(s)$，然后计算$m = s \oplus G(r)$，最后提取出$m$即可。任意对密文$c$的篡改都会导致解填充出来是乱码，或者$m$后面没有填充的0。
+
+[^10]: 这个知识点我考试遇到了，坏消息是没复习到，好消息是考场科研了一下，还是答对了。复习这里的时候又想到了一个问题，如果加密方案是非确定的，那么一个明文会对应多个密文。此时由于填充方案，解密一定是确定的，于是导致了明文空间一定是小于密文空间的。不过不影响安全性。
+
+## Digital Signature
+
+数字签名(Digital Signature)就是公钥版的MAC（MAC是对称密码的）。
 TBD
-
-[^10]: 这个知识点我考试遇到了，坏消息是没复习到，好消息是考场科研了一下，还是答对了。
-
-[^11]: 复习这里的时候又想到了一个问题，如果加密方案是非确定的，那么一个明文会对应多个密文。此时由于填充方案，解密一定是确定的，于是导致了明文空间一定是小于密文空间的。不过不影响安全性。
 
 ## Brief Summary of Above
 
