@@ -122,7 +122,7 @@ $$ Enc_k(m) = c = m \oplus k $$
 由于密钥是随机的，所以密文也是随机的。完美安全性的证明略过，请参考总结。但 OTP 有一个缺点，即加密时
 $$ Enc: \lbrace 0,1 \rbrace^n \times \lbrace0,1\rbrace^n \rightarrow \lbrace0,1\rbrace^n $$
 
-但明文长度和密钥长度必须相等，这在实际中是不可行的。可以证明当
+明文长度和密钥长度必须相等，这在实际中是不可行的。可以证明当
 $$ Enc: \lbrace 0,1 \rbrace^n \times \lbrace0,1\rbrace^{n-1} \rightarrow \lbrace0,1\rbrace^n $$
 
 明文长于密钥时，不是完美安全的。并且，OTP 使用的密钥如果能在可信信道传输，那么为什么不直接传输明文呢？

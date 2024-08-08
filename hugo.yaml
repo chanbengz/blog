@@ -9,6 +9,31 @@ buildFuture: false
 buildExpired: false
 hasCJKLanguage: true
 
+# defaultContentLanguage: en
+# defaultContentLanguageInSubdir: false
+# displayFullLangName: true
+#
+# languages:
+#   en:
+#     disabled: false
+#     languageCode: "en"
+#     languageDirection: "en"
+#     languageName: "English"
+#     title: "Home"
+#     weight: 20
+#   zh:
+#     disabled: false
+#     languageCode: "zh"
+#     languageDirection: "zh"
+#     languageName: "中文"
+#     title: "首页"
+#     weight: 10
+
+pagination:
+  disableAliases: false
+  pagerSize: 5
+  path: page
+
 minify:
   disableXML: true
   minifyOutput: true
