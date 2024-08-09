@@ -218,6 +218,10 @@ $$ |\lbrace F_k\rbrace_{k \in \lbrace 0, 1 \rbrace^n}| = 2^n $$
 我们定义一个 PRF 是有效的，当且仅当对于所有的多项式时间的算法$D$，存在一个可忽略函数$\epsilon(n)$，使得
 $$ |Pr_{k \leftarrow U_n}[D^{F_k(\cdot)}(1^n) = 1] - Pr_{f \leftarrow Func_n}[D^{f(\cdot)}(1^n) = 1]| \leq \epsilon(n) $$
 
+> **Theorm 5.1** 如果$F$ 是一个 PRF，那么下面这个对称加密方案是CPA安全的
+$$ Enc_k(m) = \langle r, F_k(r) \oplus m \rangle $$
+$$ Dec_k(c_1, c_2) = F_k(c_1) \oplus c_2 $$
+
 ### Pseudorandom Permutation
 
 伪随机置换(PRPs)比 PRF 多了一个可逆的要求，后面会用于构造密码学原语S-box。类似地，也可以定义PRP是有效的当且仅当一个随机置换$P_k(\cdot) = (F_k, F_k^{-1})$ 和一个均匀的随机置换$Perm_n$是不可区分的，其中$F_k^{-1}$的是$F_k$的逆，即
@@ -227,7 +231,7 @@ $$ F_k^{-1}(F_k(x)) = x $$
 
 ### Security of Pseudo OTP
 
-有了伪随机数发生器，我们可以输入一个任意长度的密钥作为种子，然后生成OTP需要的密钥，这样就可以解决密钥长度问题。唯一的问题是要证明这个由伪随机数生成器构造的 OTP 方案是EAV-Secure的。
+有了伪随机数发生器，我们可以输入一个任意长度的密钥作为种子，然后生成OTP需要的密钥，这样就可以解决密钥长度问题。唯一的问题是要证明这个由伪随机数生成器构造的 OTP 方案是EAV-Secure的(Theorm 3.3)。
 
 这个证明非常简单，可以用反证法[^13]证明。假设Pseudo-OTP不是EAV-Secure的，那么就存在一个多项式时间的算法$A$，使得
 $$ |Pr[A(m \oplus G(U_n) = 1] - Pr[A(U_{p(n)}) = 1]| > \epsilon(n) $$
@@ -481,7 +485,7 @@ $$ n \approx \sqrt{2H \ln \frac{1}{1 - \epsilon}} $$
 
 复(预)习一下基础数论和抽象代数的基础知识，如群、环、域、同态、同构等。
 
-离散数学中的数论知识：模运算、欧拉函数、欧几里得定理(GCD & exGCD)、费马小定理、中国剩余定理(CRT)。
+离散数学中的数论知识：模运算、欧拉函数、欧几里得定理(GCD & exGCD)、费马小定理、中国剩余定理(CRT)和二次剩余等。
 
 群(Group)的定义是一个集合$G$和一个二元运算$\circ$，满足以下性质:
 - Closure: $\forall a, b \in G, a \circ b \in G$
@@ -491,15 +495,24 @@ $$ n \approx \sqrt{2H \ln \frac{1}{1 - \epsilon}} $$
 
 如果还满足交换律，即$a \circ b = b \circ a$，则称为阿贝尔群(Abelian Group)。
 
-记$G$的阶(Order)为$|G|$，即$G$的元素个数，如果$|G|$是有限的，则称$G$是有限群，比如$Z_n = \lbrace x\ mod\ n | x \in \mathbb{Z}\rbrace = \lbrace 0, 1, \ldots, n-1 \rbrace$。
+记$G$的阶(Order)为$|G|$，即$G$的元素个数，如果$|G|$是有限的，则称$G$是有限群，比如$Z_n = \lbrace x \mod n | x \in \mathbb{Z}\rbrace = \lbrace 0, 1, \ldots, n-1 \rbrace$。
 
-我们可以证明$\mathbb{Z}_p^* = \lbrace 1, \cdots, p - 1 \rbrace$是一个阿贝尔群，其中$p$是一个素数。然后一定有一个生成元(Generator) $g$，使得$\mathbb{Z}_p^* = \lbrace g^0, g^1, \ldots, g^{p-2} \rbrace$，这里省略了模运算。
+我们可以证明$\mathbb{Z}_p^* = \lbrace 1, \cdots, p - 1 \rbrace$是一个阿贝尔群，其中$p$是一个素数。
+
+如果群$G$有一个生成元(Generator) $g$，使得$\mathbb{Z}_p^* = \lbrace g^0, g^1, \ldots, g^{p-2} \rbrace$，这里省略了模运算，那么这个群是一个循环群(Cyclic Group)。如果$Z_p^*$的阶$p$是一个素数，那么$Z_p^*$一定是一个循环群。
 
 设$s_n = \langle 1, 2, \cdots, n \rangle$ 是一个序列，$P_n$是所有$s_n$的排列，$|P_n| = n!$，如
 $$ P_3 = \lbrace \langle 1, 2, 3 \rangle, \langle 1, 3, 2 \rangle, \langle 2, 1, 3 \rangle, \langle 2, 3, 1 \rangle, \langle 3, 1, 2 \rangle, \langle 3, 2, 1 \rangle \rbrace $$
 定义置换群(Permutation Group) $P_n$的二元运算$\circ$为两个置换的复合，即$\sigma \circ \tau = \sigma(\tau(i))$，则$P_n$是一个群。不过$P_n$不是一个阿贝尔群。例如$\sigma = \langle 3,2,1 \rangle, \tau = \langle 1,3,2 \rangle$，则$$\sigma \circ \tau = \langle 2,1,3 \rangle \neq \langle 1,2,3 \rangle = \tau \circ \sigma$$
 
-TBD 等一个抽代大神教教
+当我们再加多一个运算到一个阿贝群上，性质仍保持不变，我们就得到了一个环(Ring)，记为$(R, +, \times)$（这里加号和乘号都不是原来的加法乘法的意思）。环还拓展了三个性质：
+1. Closure: $R$ 在 $+$ 和 $\times$ 的结果都在 $R$ 中
+2. Associativity: $(a \times b) \times c = a \times (b \times c)$
+3. Distributive: $a \times (b + c) = a \times b + a \times c$
+
+再接着拓展，Commutative: $a \times b = b \times a$，那我们称这个环是一个交换环(Commutative Ring)，如果这个环还有单位元且没有零，那么我们称这个环是一个Integral Domain
+
+然后如果Integral Domain上的运算$\times$还存在逆元，使得$a\cdot a^{-1} = e$，那么我们称这个环是一个域(Field)。
 
 ### Trapdoor Function
 
@@ -520,8 +533,8 @@ TBD 等一个抽代大神教教
 
 ### RSA
 
-RSA 的方案设计
-- $Gen$: 随机生成两个大素数$p, q$，计算$n = pq$，然后选择一个$e$使得$gcd(e, \phi(n) = 1$，计算$d = e^{-1} \mod \phi(n)$，输出$(pk = (n, e), sk = (n, d))$
+RSA 是一个确定性的算法，算法方案设计如下
+- $Gen$: 随机生成两个大素数$p, q$，计算$n = pq$，然后选择一个$e$使得$\gcd(e, \phi(n) = 1$，计算$d = e^{-1} \mod \phi(n)$，输出$(pk = (n, e), sk = (n, d))$
 - $Enc$: 对于一个消息$m$，计算$c = m^e \mod n$
 - $Dec$: 对于一个密文$c$，计算$m = c^d \mod n$
 
@@ -534,17 +547,54 @@ RSA 的方案设计
 
 $\Rightarrow$ 不过还有一些破解思路，如Pollard's p-1, 低指数广播攻击等可以分解$N$；也有一些比如共模攻击等可以在不分解$N$的情况下还原明文。
 
-### El-Gamal
-
-TBD
-
 ### Diffie-Hellman Key Exchange
 
-TBD
+为解决对称密码学传输密钥的问题，密码学家提出了一种密钥交换的理想方案。定义密钥交换方案$\Pi$的安全性实验$KE_{A, \Pi}(n)$如下
+1. 可信的双方（多方）通过$\Pi$协议交换密钥$k$，一个被动攻击者$A$（只能监听不能劫持）可以监听所有的通信
+2. 选择一个随机bit $b$，如果$b=0$，交换$k^{\prime} = k$，否则交换$k^{\prime} \leftarrow_R \lbrace 0, 1 \rbrace^n$即一个随机数
+3. $A$ 监听到$k^{\prime}$，输出$b^{\prime}$，如果$b^{\prime} = b$，则实验成功并输出$1$，否则输出$0$
+
+离散对数问题(Discrete Logarithm Problem)是一个困难问题，即给定一个群$G$和一个生成元$g$，找到一个$x$使得$g^x = h$，记为
+$$ \log_g h = x $$
+我们可以通过$Dlog_{A, \mathcal{G}}(n)$实验来证明这是困难的：
+1. $Gen$: $(G, g, q) \leftarrow \mathcal{G}(1^n)$，然后随机选取$h \in G$
+2. $A(G, g, q, h)$，然后输出$x$
+3. 如果$x = \log_g h$，则实验成功并输出$1$，否则输出$0$
+
+离散对数问题是困难的当且仅当对于所有PPT算法$A$，存在一个可忽略函数$\epsilon(n)$，使得
+$$ Pr[Dlog_{A, \mathcal{G}}(n) = 1] \leq \epsilon(n) $$
+
+Diffie-Hellman Key Exchange 是基于离散对数问题的，其方案设计如下
+1. $Gen$: $(G, g, q) \leftarrow \mathcal{G}(1^n)$，然后随机选取$x \in G$，计算$h_1 = g^x \mod q$，输出$(pk = (G, g, q, h_1), sk = x)$
+2. 另外一方选取$y \in G$，计算$k = h^y \mod q$，然后发送$h_2 = g^y \mod q$给对方
+3. 接收到$h_2$后，计算$k = h_2^x \mod q$，然后双方都得到了相同的密钥$k$，但监听者只能得到$g, q, h_1, h_2$，无法得到$k$
+
+DH问题的正式定义是$ DH(h_1, h_2) = DH(g^x, g^y) = g^{xy}$。因为要得到$g^{xy}$，首先需要得到$x$，即需要解离散对数问题。DH问题还有两个变种
+- Computational DH problem: 给定$g, q, g^x, g^y$，计算$g^{xy}$
+- Decisional DH problem: 给定$g, q, g^x, g^y, z$，判断$z = g^{xy}$ 或者是随机数(上面的KE实验)
+
+DDH是困难的当且仅当对于所有PPT算法$A$，存在一个可忽略函数$\epsilon(n)$，使得
+$$ | Pr[A(G, g, q, g^x, g^y, g^{xy}) = 1] - Pr_{z \leftarrow_R G}[A(G, g, q, g^x, g^y, z) = 1] | \leq \epsilon(n) $$
+
+假设的强度是DDH > CDH > DLP，即左边可以推出右边，困难程度递增。
+
+### El-Gamal
+
+El-Gamal 也是基于离散对数问题的，其方案设计如下
+1. $Gen(1^n)$: $(G, g, q) \leftarrow \mathcal{G}(1^n)$，然后随机选取$x \in G$，计算$h = g^x \mod q$，输出$(pk = (G, g, q, h), sk = x)$
+2. $Enc_{pk}(m)$: 随机选取$y \in G$，计算$c_1 = g^y$，$c_2 = h^y \cdot m$，输出密文$(c_1, c_2)$
+3. $Dec_{sk}(c_1, c_2)$: 计算$m = c_2 \cdot (c_1^x)^{-1}$
+
+El-Gamal自带随机性，因此是一个非确定性加密方案，也是CPA安全的，但不是CCA安全的，因为可以通过延展性攻击:
+- 对于密文$c = (g^y, h^y \cdot m)$，攻击者可以在$c_2$上乘上一个任意数$a$，然后得到$c^{\prime} = (g^y, h^y \cdot (m \cdot a))$，然后解密得到$m^{\prime} = m \cdot a$
+
+满足CCA安全的补丁也很简单，即加入CCA安全的对称密码即可，还能保留CPA安全性
+- 加密改为: $c = (g^y, Enc_k^{\prime}(m))$，对称密码的密钥$k = H(h^y)$
+- 解密改为: 先计算$k = H(c_1^x)$，然后解密$m = Dec_k^{\prime}(c_2)$
 
 ### Padding Scheme
 
-显然，由于公钥广播会导致信息泄漏，所以公钥密码学一定不是完美安全的。不过好消息是，由于广播公钥相当于开盒了加密模型(Encryption Oracle)，我们只需要关注CPA安全性。公钥密码学的CPA安全实验和对称密码学的CPA安全实验基本一致，只是多了给攻击者公钥的步骤。
+显然，由于公钥广播会导致信息泄漏，所以公钥密码学一定不是完美安全的。不过好消息是，由于广播公钥相当于开盒了加密机(Encryption Oracle)，我们只需要关注CPA安全性。公钥密码学的CPA安全实验和对称密码学的CPA安全实验基本一致，只是多了给攻击者公钥的步骤。
 
 回顾前面的"确定性"加密方案不是CPA安全的，但是目前所有介绍的加密方案都是确定性的。块密码可以引入IV来增加随机性，而公钥密码类似的概念是填充方案(Padding Scheme)。原来公钥密码是不需要填充的，引入填充即增加了随机性，又使得明文长度与密钥长度一致，这样就可以保证安全性[^10]。本节只简单介绍PKCS#1 OAEP填充方案。
 
@@ -558,14 +608,66 @@ $$ t = H(s) \oplus r $$
 
 解填充只需先计算出$r = t \oplus H(s)$，然后计算$m = s \oplus G(r)$，最后提取出$m$即可。任意对密文$c$的篡改都会导致解填充出来是乱码，或者$m$后面没有填充的0。
 
+如果OAEP使用的$G$和$H$都是Random Oracle，那么OAEP甚至是CCA安全[^11]的。
+
 [^10]: 这个知识点我考试遇到了，坏消息是没复习到，好消息是考场科研了一下，还是答对了。复习这里的时候又想到了一个问题，如果加密方案是非确定的，那么一个明文会对应多个密文。此时由于填充方案，解密一定是确定的，于是导致了明文空间一定是小于密文空间的。不过不影响安全性。
+
+[^11]: 裸的RSA也不是CCA安全的，因为延展性，攻击者可以询问$c^{\prime} = c \cdot 2^e$，然后解密$m^{\prime} = m \backslash 2$，就使得实验成功率是1。
+
+### CPA & CCA in Public-Key Cryptography
+
+又到了头疼的密码学家快乐时间，构造一个公钥密码学的理论安全模型。先来看看CPA安全的公钥密码学模型：
+1. 假设有一个RO模型，$H: \lbrace 0, 1 \rbrace^* \rightarrow \lbrace 0, 1 \rbrace^n$，还有一个Trapdoor Permutation $\lbrace f, f^{-1} \rbrace$，然后$f(\cdot)$ 是公钥，$f^{-1}(\cdot)$ 是私钥
+2. 加密明文$x \in \lbrace 0, 1 \rbrace^n$时，随机选一个$r \leftarrow_R \lbrace 0, 1 \rbrace^n$，然后计算$c = f(r) || H(r) \oplus x$
+3. 解密密文$c$时，计算$r = f^{-1}(c_1)$，然后计算$x = H(r) \oplus c_2$
+
+这个安全性证明跟PRF的安全性(Theorm 5.1)类似。然后是CCA安全的公钥密码学模型：
+1. 假设有两个RO模型$H, H^{\prime}$，还有一个Trapdoor Permutation $\lbrace f, f^{-1} \rbrace$，然后$f(\cdot)$ 是公钥，$f^{-1}(\cdot)$ 是私钥
+2. 加密明文$x \in \lbrace 0, 1 \rbrace^n$时，随机选一个$r \leftarrow_R \lbrace 0, 1 \rbrace^n$，然后计算$c = f(r) || H(r) \oplus x || H^{\prime}(r, x)$
+3. 解密时先计算$r = f^{-1}(c_1)$，然后计算$x = H(r) \oplus c_2$，最后检查$H^{\prime}(r, x)$是否等于$c_3$（其实就是加了一个MAC），如果不等则随机输出一个数
+
+这个模型的安全性证明比较复杂，推荐看王老师[课件](https://github.com/chanbengz/SUSTech_CS_Notes/blob/main/CSE5014%20Cryptography%20and%20Network%20Security/Slides/lec14.pdf)里的证明
 
 ## Digital Signature
 
-数字签名(Digital Signature)就是公钥版的MAC（MAC是对称密码的）。
-TBD
+数字签名(Digital Signature)就是公钥版的MAC（MAC是对称密码的）。严谨定义:
+- Gen: 输入$1^n$，输出$(pk, sk)$
+- Sign: 输入$sk, m$，输出$\sigma \leftarrow Sign_{sk}(m)$
+- Verify: 输入$pk, m, \sigma$，输出$Vrfy_{pk}(m, \sigma)$
 
-## Brief Summary of Above
+对比MAC的好处是数字签名可由所有人验证，以及签名者没有否认权。同样，数字签名也有伪造实验，即$Forge_{A, \Pi}(n)$，定义如下
+1. $Gen$: $(pk, sk) \leftarrow Gen(1^n)$
+2. $A(pk)$，然后与签名者(Signing Oracle)交互，可以询问$m$以外的任何消息的签名
+3. $A$ 输出$(m, \sigma)$，如果$Vrfy_{pk}(m, \sigma) = 1$ 且 $m \notin Q$，则实验成功并输出$1$，否则输出$0$
+
+数字签名$\Pi$是安全的当且仅当对于所有PPT算法$A$，存在一个可忽略函数$\epsilon(n)$，使得
+$$ Pr[Forge_{A, \Pi}(n) = 1] \leq \epsilon(n) $$
+
+### RSA Signature
+
+Plain RSA 签名有一个很严重的问题，即对于这个实验，攻击者可以通过
+1. 询问签名者$(m_1, \sigma_1)$ 和 $(m_2, \sigma_2)$
+2. 伪造一个新的签名$(m_1 \cdot m_2, \sigma_1 \cdot \sigma_2)$，因为$\sigma_1^d \cdot \sigma_2^d = (m_1^d \cdot m_2^d) = (m_1 \cdot m_2)^d$
+
+于是就有了改进的RSA-FDH签名方案，即
+- Gen: $(pk, sk) \leftarrow Gen(1^n)$，其中$pk = (n, e)$，$sk = (n, d)$，**和一个RO模型**$H$
+- Sign: 输入$sk, m$，输出$\sigma = H(m)^d \mod n$
+- Verify: 输入$pk, m, \sigma$，输出$1$当且仅当$\sigma^e = H(m) \mod n$
+
+安全性依赖于RO模型$H$，如果$H$是一个Random Oracle，那么RSA-FDH是安全的。这个可用反证法证明。
+
+### Rabin Signature
+
+Rabin 签名方案是基于Rabin Trapdoor Function的，其方案设计如下
+- Gen: 选择两个随机数$p, q$，他们都$x \equiv 3\ \mod\ 4$，计算$n = pq$，输出$(pk = n, sk = (p, q))$
+- Sign: 对于一个消息$m$，计算并随机选一个 $c = \sqrt{m} \mod n$
+- Verify: 对于一个签名$c$，计算$m = c^2 \mod n$，然后输出$m$
+
+Rabin 签名也是不抗Chosen-Message Attack 的，因为攻击者可以通过
+1. 构造一个消息$m = x^2\mod n$，然后得到签名$\sigma$
+2. 一半可能，$\sigma = x \mod n$；如果不是，那么$\gcd(\sigma - x, n)$ 就是$n$的一个因子
+
+## Brief Summary
 
 以上是考试内容，然后王老师贴心的总结了一下考试的重点，按时间顺序排列：
 - Perfect secrecy (one-time pad) (Def. 1.5 - Thm. 1.9)
@@ -588,11 +690,9 @@ TBD
 
 本文基本覆盖到了，然而没严格按照这个顺序，也懒得加索引了（
 
-以下内容就不考了，但是很有意思，推荐看看。
-
 ## Zero-Knowledge Proof & Homomorphic Encryption
 
-> 王琦老师特别喜欢这一章，可惜不考。
+> 王琦老师特别喜欢这一章，可惜不考。所以下面的内容就是选读了。
 > 
 > 这一部分内容很实用，解决了现实中很多问题，如安全多方计算(MPC)问题、区块链等
 
@@ -604,4 +704,11 @@ TBD
 
 TBD
 
+### Schnorr’s Identification Protocol
+
+TBD
+
+### Homomorphic Encryption
+
+TBD
 
