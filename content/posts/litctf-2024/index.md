@@ -2,7 +2,7 @@
 title = 'LITCTF 2024 Personal Writeup'
 date = 2024-08-11T23:03:41+08:00
 summary = "High School CTFers play better than me. I should be retired right now."
-math = false
+math = true
 draft = false
 tags = ['Writeup', 'LITCTF']
 categories = ['CTF']
