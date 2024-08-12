@@ -10,13 +10,13 @@ tags = ["Review"]
 
 > 最近在摸鱼中准备下个月的密码学专场线下赛，所以决定在考完的两个月后再来复习一遍王琦的密码学 ~~虽然好像不是特别有用~~。
 >
-> 本篇会尽量详细地覆盖一下密码学的基础，应该是有遗漏的。内容来自课件、课本和王老师亲笔写的的[总结笔记](https://github.com/chanbengz/SUSTech_CS_Notes/blob/main/CSE5014%20Cryptography%20and%20Network%20Security/Notes/summary.pdf)[^0]。
+> 本篇会尽量详细地覆盖一下密码学的基础，应该是有遗漏的。内容来自课件、课本和王老师亲笔写的[总结笔记](https://github.com/chanbengz/SUSTech_CS_Notes/blob/main/CSE5014%20Cryptography%20and%20Network%20Security/Notes/summary.pdf)[^0]。
 >
 > 本文可以速通密码学，不过还请仔细阅读课本和课件上的证明，因为很重要。
 
 [^0]: 快跟我说：谢谢王老师。 ~~不过王老师也摸了所以没有写完~~
 
-## Introduction Classical & Modern Cryptography 
+## Introducing Classical & Modern Cryptography 
 
 > 密码和编码是不同的概念。密码涉及到密钥，而编码不涉及密钥。
 >
@@ -184,6 +184,8 @@ $$ Pr[PrivK_{A, \Pi}(n) = 1] \leq \frac{1}{2} + \epsilon(n) $$
 3. $A(c_0, c_1, \ldots, c_t)$ 攻击者输出一个bit $b^{\prime}$，如果$b = b^{\prime}$则实验成功并输出$1$，否则输出$0$
 
 如果对于所有的多项式时间的算法$A$，存在一个可忽略函数$\epsilon(n)$，使得实验成功的概率至多是$1 / 2 + \epsilon(n)$，那么我们称这个加密方案是multiple-message indistinguishable。
+
+> 可以发现安全假设：区分(distinguish) > 解密(decrypt)，即如果攻击者不能区分密文和随机数，那么他也不能解密密文。
 
 ## Pseudorandomness
 
