@@ -8,7 +8,7 @@ tags = ['Writeup', 'LITCTF']
 categories = ['CTF']
 +++
 
-> 虾饺歇了一周，但恰好有比较闲，于是跟学弟开了个COMP4SS车队打个高中生比赛玩玩，然后又被带飞了。
+> 虾饺歇了一周，但恰好有比较闲，于是跟[学弟](https://blog.xciphand.icu/2024/08/12/LITCTF-2024/#Web-%E7%BD%91%E7%AB%99)开了个COMP4SS车队打个高中生比赛玩玩，然后又被带飞了。
 >
 > 学弟ak了web，半ak了misc（剩一道kuwahara写代码题，工作量比较大），本菜只能捡学弟不会的crypto来ak（
 > 
@@ -51,7 +51,7 @@ from Crypto.Util.number import long_to_bytes
 def transform(x,y):
     res = []
     while y:
-        res.append(x//y)
+        res.append(x // y)
         x, y = y, x % y
     return res
     
@@ -63,26 +63,26 @@ def continued_fraction(sub_res):
     
 def sub_fraction(x, y):
     res = transform(x, y)
-    res=list(map(continued_fraction,(res[0:i] for i in range(1,len(res)))))
+    res = list(map(continued_fraction, (res[0:i] for i in range(1, len(res)))))
     return res
 
-def get_pq(a,b,c):
-    par=gmpy2.isqrt(b*b-4*a*c)
-    x1,x2=(-b+par)//(2*a),(-b-par)//(2*a)
-    return x1,x2
+def get_pq(a, b, c):
+    par = gmpy2.isqrt(b * b - 4 * a * c)
+    x1, x2 = (-b + par) // (2 * a), (-b - par) // (2 * a)
+    return x1, x2
 
-def wienerAttack(e,n):
-    for (d,k) in sub_fraction(e,n):
-        if k==0:
+def wienerAttack(e, n):
+    for (d, k) in sub_fraction(e, n):
+        if k == 0:
             continue
-        if (e*d-1)%k!=0:
+        if (e * d - 1) % k != 0:
             continue
         
-        phi=(e*d-1)//k
-        px,qy=get_pq(1,n-phi+1,n)
-        if px*qy==n:
-            p,q=abs(int(px)),abs(int(qy))
-            d=gmpy2.invert(e,(p-1)*(q-1))
+        phi = (e * d - 1) // k
+        px, qy = get_pq(1, n - phi + 1, n)
+        if px * qy == n:
+            p, q = abs(int(px)), abs(int(qy))
+            d = gmpy2.invert(e, (p - 1) * (q - 1))
             return d
     print("Failed to find d")
 
@@ -94,7 +94,6 @@ d = wienerAttack(e, N)
 m = pow(c, d, N)
 
 print(long_to_bytes(m))
-
 ```
 
 ### pope shuffle
@@ -125,7 +124,7 @@ from Crypto.Util.number import getPrime, bytes_to_long as btl, long_to_bytes as 
 p = getPrime(1024)
 q = getPrime(1024)
 
-n = p*q
+n = p * q
 e = p
 
 with open("flag.txt", "rb") as f:
