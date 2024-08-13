@@ -436,7 +436,7 @@ $$ t = Mac_k(m) = c_t $$
 
 ## Hash Function
 
-哈希函数(Hash Function)是一种将任意长度的消息映射为固定长度的确定性函数，密钥是可选的。一个（无密钥）哈希函数$H: \lbrace 0, 1 \rbrace^* \rightarrow \lbrace 0, 1 \rbrace^n$ 的安全性依赖于以下几个性质：
+哈希函数(Hash Function)是一种将任意长度的消息映射为固定长度的确定性函数，密钥是可选的。一个（无密钥）哈希函数$H: \lbrace 0, 1 \rbrace^* \rightarrow \lbrace 0, 1 \rbrace^n$ 的安全性依赖于以下性质：
 1. **Preimage Resistance**: 给定一个哈希值$h$，找到一个消息$m$使得$H(m) = h$是困难的
 2. **Collision Resistance**: 找到两个不同的消息$m_1, m_2$使得$H(m_1) = H(m_2)$是困难的
 
@@ -499,9 +499,7 @@ $$ n \approx \sqrt{2H \ln \frac{1}{1 - \epsilon}} $$
 
 记$G$的阶(Order)为$|G|$，即$G$的元素个数，如果$|G|$是有限的，则称$G$是有限群，比如$Z_n = \lbrace x \mod n | x \in \mathbb{Z}\rbrace = \lbrace 0, 1, \ldots, n-1 \rbrace$。
 
-我们可以证明$\mathbb{Z}_p^* = \lbrace 1, \cdots, p - 1 \rbrace$是一个阿贝尔群，其中$p$是一个素数。
-
-如果群$G$有一个生成元(Generator) $g$，使得$\mathbb{Z}_p^* = \lbrace g^0, g^1, \ldots, g^{p-2} \rbrace$，这里省略了模运算，那么这个群是一个循环群(Cyclic Group)。如果$Z_p^*$的阶$p$是一个素数，那么$Z_p^*$一定是一个循环群。
+我们可以证明$\mathbb{Z}_p^* = \lbrace 1, \cdots, p - 1 \rbrace$是一个阿贝尔群，其中$p$是一个素数。如果群$G$有一个生成元(Generator) $g$，使得$\mathbb{Z}_p^* = \lbrace g^0, g^1, \ldots, g^{p-2} \rbrace$，这里省略了模运算，那么这个群是一个循环群(Cyclic Group)。如果$\mathbb{Z}_p^* $的阶 $p$ 是一个素数，那么$\mathbb{Z}_p^*$一定是一个循环群。
 
 设$s_n = \langle 1, 2, \cdots, n \rangle$ 是一个序列，$P_n$是所有$s_n$的排列，$|P_n| = n!$，如
 $$ P_3 = \lbrace \langle 1, 2, 3 \rangle, \langle 1, 3, 2 \rangle, \langle 2, 1, 3 \rangle, \langle 2, 3, 1 \rangle, \langle 3, 1, 2 \rangle, \langle 3, 2, 1 \rangle \rbrace $$
