@@ -1,4 +1,4 @@
-baseURL: https://chanbengz.github.io/
+baseURL: https://blog.benx.dev/
 languageCode: en-us
 title: "Ben's Blog"
 theme: PaperMod
@@ -105,7 +105,7 @@ params:
     hiddenInSingle: true # hide on single page
 
   editPost:
-    URL: "https://github.com/chanbengz/chanbengz.github.io/blob/main/content"
+    URL: "https://github.com/chanbengz/blog/blob/main/content"
     Text: "Suggest Changes"
     appendFilePath: true
 

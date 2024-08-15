@@ -16,7 +16,7 @@ tags = ['Paper', 'Apple', 'Side-Channel']
 
 参加 NUS 的夏令营时选择了这篇论文的复现+可视化+防御作为项目[^NUS SWS3011 DOTA]。~~项目本身非常trivial就不在这献丑了~~。这个侧信道攻击非常巧妙，但由于非常新颖，简中互联网暂时没有这篇文章的解读，于是决定尝试以本人浅薄的理解来解读一下。本文并不是翻译，而是对论文的解读，所以可能会有一些错误和论文中没有提到的内容。如果有错误，欢迎指正。
 
-[^NUS SWS3011 DOTA]: NUS SoC 的课程 SWS3011 Defense of The Ancient，主讲教授是 Prof. Norman Hugh Anderson，主要介绍计算机安全的基础知识和技术。队友做的可视化网站链接: [DOTA/gofetch-introduction](https://chanbengz.github.io/DOTA/gofetch-introduction.html)，repo 地址: [Ray0v0/DOTA_WebPage](https://github.com/Ray0v0/DOTA_WebPage)
+[^NUS SWS3011 DOTA]: NUS SoC 的课程 SWS3011 Defense of The Ancient，主讲教授是 Prof. Norman Hugh Anderson，主要介绍计算机安全的基础知识和技术。队友做的可视化网站链接: [DOTA/gofetch-introduction](https://blog.benx.dev/DOTA/gofetch-introduction.html)，repo 地址: [Ray0v0/DOTA_WebPage](https://github.com/Ray0v0/DOTA_WebPage)
 
 ## Introduction
 
