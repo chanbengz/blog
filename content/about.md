@@ -36,7 +36,9 @@ Penetration Testing
 - Security Response, Incident Handling, Forensics
 
 Research [Learning]
-- Kernel Exploitation/Programming, Side-Channel/Crypto
+- Chip Design with Chisel
+- Kernel Exploitation/Programming
+- Side-Channel, Cryptography
 
 ### Development
 
@@ -44,14 +46,14 @@ Hardware: Verilog/SystemVerilog, Chisel
 
 Software: C/C++, Python, Java, Rust
 
-Tools
+### Tools
 - Web: Burp Suite, Nmap, Wireshark, Metasploit, SQLMap, Hydra, Dirsearch, ...
 - Crypto: GnuPG, OpenSSL, Hashcat, John the Ripper, ...
 - Debug: GDB, IDA Pro, Ghidra, Radare2, Jadx, Frida
 - Text: Vim/Neovim, $\LaTeX$, Markdown, Typst
 - VC: Git, LazyGit, Github/Gitlab
 
-## $ cat /usr/projects
+## $ cat /home/ben/projects
 
 ### Semester Projects
 - [[CS 109] Dark Chess](https://github.com/chanbengz/SUSTech_CS109_Project): Dark chess game implemented in Java using Swing GUI, a rookie project.
