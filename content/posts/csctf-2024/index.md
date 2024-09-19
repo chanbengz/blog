@@ -1,9 +1,9 @@
 +++
 title = "CyberSpace CTF 2024 Personal Writeup"
 date = 2024-08-31T15:49:36+08:00
-summary = "Not even qualified to be a beginner:("
+summary = "Not even qualified to be a beginner :("
 math = true
-draft = true
+draft = false
 tags = ['Writeup', 'CSCTF']
 categories = ['CTF']
 +++
