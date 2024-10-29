@@ -59,8 +59,12 @@ Software: C/C++, Python, Java, Rust
 - [[CS 109] Dark Chess](https://github.com/chanbengz/SUSTech_CS109_Project): Dark chess game implemented in Java using Swing GUI, a rookie project.
 - [[CS 202] MineCPU](https://github.com/wLUOw/MineCPU): Standard 5-stage pipeline RISC-V CPU implemented in SystemVerilog, with cache and branch prediction as performance optimization, verified by Verilator and Unicorn simulator. As verification of functionality, the project implements a simple game, Pacman, written in C++ and cross-compiled to RV machine code. The I/O interface is integrated into the CPU and driven by MMIO.
 - [[CS 207] Piano by FPGA](https://github.com/chanbengz/SUSTech_CS207_Project_Piano): Another rookie project introducing FPGA and Verilog, intended for learning digital design. It's a simple piano running on FPGA with auto-play, learning and free-play modes. Developed on my own.
+- [[CS 301] GISC Embedded]() UNDER DEVELOPMENT
 - [[CS 305] HTTP File Manager](https://github.com/chanbengz/SUSTech_CS305_Project_2023F): Remote file manager implemented in Python to enhance the understanding of HTTP protocol along with TCP/IP for computer networks. The framework is built from scratch since the instructor requires no third-party libraries.
+- [[CS 309] NINJA Chat](https://github.com/SUSTech-NINJA) UNDER DEVELOPMENT
+- [[CS 323] Incredibuild Compiler](https://github.com/chanbengz/SUSTech_CS323_Project_Incredibuild) UNDER DEVELOPMENT
+- [[SWS 3011] GoFetch Demo & Mitigation](https://github.com/chanbengz/NUS_SoC_SWS_2024_DOTA_GP5): A educational website developed to give a first glance at the side-channel attack, and animate the GoFetch attack. The mitigation is also provided to show a possible hardware and software solution to defend against the attack. Meanwhile the overhead of the mitigation is also discussed.
 
 ### Notes
-- [CS Notes @SUSTech](https://github.com/chanbengz/SUSTech_CS_Notes): Course notes and materials during my undergraduate study at SUSTech, mainly for computer science.
-- [Write Up for CTF](https://github.com/chanbengz/CTF_Writeups): Collection of my personal writeups (aka solutions) for CTF challenges. I've also post them on the blog.
+- [CS Notes @SUSTech](https://github.com/chanbengz/sustech-notes): Course notes and materials during my undergraduate study at SUSTech, mainly for computer science.
+- [Write Up for CTF](https://github.com/chanbengz/ctf-writeups): Collection of my personal writeups (aka solutions) for CTF challenges. I've also post them on the blog.

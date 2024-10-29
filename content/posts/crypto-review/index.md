@@ -10,7 +10,7 @@ tags = ["Review"]
 
 > 最近在摸鱼中准备下个月的密码学专场线下赛，所以决定在考完的两个月后再来复习一遍王琦的密码学 ~~虽然好像不是特别有用~~。
 >
-> 本篇会尽量详细地覆盖一下密码学的基础，应该是有遗漏的。内容来自课件、课本和王老师亲笔写的[总结笔记](https://github.com/chanbengz/SUSTech_CS_Notes/blob/main/CSE5014%20Cryptography%20and%20Network%20Security/Notes/summary.pdf)[^0]。
+> 本篇会尽量详细地覆盖一下密码学的基础，应该是有遗漏的。内容来自课件、课本和王老师亲笔写的[总结笔记](https://github.com/chanbengz/sustech-notes/blob/main/CSE5014%20Cryptography%20and%20Network%20Security/Notes/summary.pdf)[^0]。
 >
 > 本文可以速通密码学，不过还请仔细阅读课本和课件上的证明，因为很重要。
 
@@ -112,7 +112,7 @@ $$ Enc_k(m_0) \equiv Enc_k(m_1) $$
 
 即他们的密文是在概率上是等同分布的。
 
-这两个定义是等价的，具体证明略过，可以参考[Assignment1 Q2](https://github.com/chanbengz/SUSTech_CS_Notes/blob/main/CSE5014%20Cryptography%20and%20Network%20Security/Assignment/Assign01_sol.pdf)
+这两个定义是等价的，具体证明略过，可以参考[Assignment1 Q2](https://github.com/chanbengz/sustech-notes/blob/main/CSE5014%20Cryptography%20and%20Network%20Security/Assignment/Assign01_sol.pdf)
 
 ### One-Time Pad (OTP)
 
@@ -626,7 +626,7 @@ $$ t = H(s) \oplus r $$
 2. 加密明文$x \in \lbrace 0, 1 \rbrace^n$时，随机选一个$r \leftarrow_R \lbrace 0, 1 \rbrace^n$，然后计算$c = f(r) || H(r) \oplus x || H^{\prime}(r, x)$
 3. 解密时先计算$r = f^{-1}(c_1)$，然后计算$x = H(r) \oplus c_2$，最后检查$H^{\prime}(r, x)$是否等于$c_3$（其实就是加了一个MAC），如果不等则随机输出一个数
 
-这个模型的安全性证明比较复杂，推荐看王老师[课件](https://github.com/chanbengz/SUSTech_CS_Notes/blob/main/CSE5014%20Cryptography%20and%20Network%20Security/Slides/lec14.pdf)里的证明
+这个模型的安全性证明比较复杂，推荐看王老师[课件](https://github.com/chanbengz/sustech-notes/blob/main/CSE5014%20Cryptography%20and%20Network%20Security/Slides/lec14.pdf)里的证明
 
 ## Digital Signature
 
