@@ -19,7 +19,7 @@ Simple SQLi. Login with `admin` and password `' or 1=1; #` and you will get the 
 
 Simple SSRF. By pass the verification and resolve to `127.0.0.1`
 
-```
+```python
 def verifyBlog(url):
     blog_list = ["blog","cryptid","real","666",".org"]
     for word in blog_list:

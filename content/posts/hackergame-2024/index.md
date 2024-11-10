@@ -239,7 +239,7 @@ contract BatchTransfer {
 
 ### 不宽的宽字符
 
-感谢zsw大佬的提醒。用脚本输入bytes一直不过。。。然后手动粘贴就过了。。。
+用脚本输入bytes一直不过。。。然后手动粘贴就过了。。。
 
 宽字符(wchar_t是UTF-16)转UTF-8后是'Z:\theflag\x00'就行了，然后构造这个宽字符
 
@@ -387,7 +387,7 @@ print(flag)
 首先计算积分
 
 $$
-\int_0^1 \frac{x^{n}(1-x)^{n}a+bx+cx^2}{1+x^2}dx
+\int_0^1 \frac{x^{n}(1-x)^{n}(a+bx+cx^2)}{1+x^2}dx
 $$
 
 在sagemath里定积分算参数
@@ -478,8 +478,6 @@ print(reg)
 ```
 
 #### 2.0
-
-感谢大佬zsw提醒。
 
 有个[很像的算法题](https://leetcode.cn/problems/binary-prefix-divisible-by-5/description/)，以及[解法](https://blog.csdn.net/matrix67/article/details/4779881)。
 
