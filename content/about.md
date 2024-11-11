@@ -10,7 +10,7 @@ math: true
 
 I'm Ben Chen (陈贲), currently a full-time undergraduate at [Southern University of Science and Technology](https://www.sustech.edu.cn/), majoring in Computer Science and Technology, focusing on System Security in [COMPASS Lab](https://compass.sustech.edu.cn/), advised by [Prof. Fengwei Zhang](https://fengweiz.github.io/).
 
-A CTFer, playing for [COMPASS CTF](https://github.com/compass-ctf-team) and H4aG4au. Good at **Web**, **Misc** and **Crypto**.
+Also a CTFer, playing for [COMPASS CTF](https://home.compassc.tf) and H4aG4au. Good at **Web**, **Misc** and **Crypto**.
 
 ## $ cat /etc/nicknames
 
@@ -18,11 +18,9 @@ In formal situation, I go by the name Ben Chen or CHEN Ben. In other cases, you 
 
 ## $ cat /etc/friends
 
-[Roderick Tianrun Qiu](https://r-q.name/)
-
-[Zhuo Wang](https://we-are-zed.github.io/)
-
-[xciphand](https://blog.xciphand.icu/)
+- [Roderick Tianrun Qiu](https://r-q.name/)
+- [Zhuo Wang](https://we-are-zed.github.io/)
+- [xciphand](https://blog.xciphand.icu/)
 
 and ... you!
 
@@ -35,23 +33,23 @@ Penetration Testing
 - Source Code Audit, Malware Analysis, Traffic Analysis
 - Security Response, Incident Handling, Forensics
 
-Research [Learning]
+Research
 - Chip Design with Chisel
-- Kernel Exploitation/Programming
 - Side-Channel, Cryptography
+- Kernel Exploitation/Programming
 
 ### Development
 
 Hardware: Verilog/SystemVerilog, Chisel
 
-Software: C/C++, Python, Java, Rust
+Software: C/C++, Python, Java, Rust, PHP, Javascript/Typescript, Solidity
 
 ### Tools
 - Web: Burp Suite, Nmap, Wireshark, Metasploit, SQLMap, Hydra, Dirsearch, ...
-- Crypto: GnuPG, OpenSSL, Hashcat, John the Ripper, ...
-- Debug: GDB, IDA Pro, Ghidra, Radare2, Jadx, Frida
-- Text: Vim/Neovim, $\LaTeX$, Markdown, Typst
-- VC: Git, LazyGit, Github/Gitlab
+- Crypto: GnuPG, OpenSSL, Hashcat, John the Ripper, Metamask, ...
+- Debug: GDB, IDA Pro, Ghidra, Radare2, Jadx, Frida, ...
+- Text: Vim/Neovim, $\LaTeX$, Markdown, Typst, ...
+- VC: Git, LazyGit, Github/Gitlab, ...
 
 ## $ cat /home/ben/projects
 
@@ -68,3 +66,4 @@ Software: C/C++, Python, Java, Rust
 ### Notes
 - [CS Notes @SUSTech](https://github.com/chanbengz/sustech-notes): Course notes and materials during my undergraduate study at SUSTech, mainly for computer science.
 - [Write Up for CTF](https://github.com/chanbengz/ctf-writeups): Collection of my personal writeups (aka solutions) for CTF challenges. I've also post them on the blog.
+- [Slides @Slidev](https://github.com/chanbengz/slides): Slides for presentations, mainly for academic purposes.

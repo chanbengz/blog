@@ -1,5 +1,5 @@
 +++
-title = 'PCB 2024 Personal Writeup'
+title = 'Pengcheng Cup 2024 Personal Writeup'
 date = 2024-11-10T14:37:06+08:00
 summary = "Can those 'OFFICIAL' CTFs be any more boring?"
 math = true
