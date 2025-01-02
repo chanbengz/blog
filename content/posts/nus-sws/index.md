@@ -1,5 +1,5 @@
 +++
-title = 'NUS SOC Summer Workshop 2024 Summary'
+title = 'Stories in Summer of NUS'
 date = 2024-07-24T15:59:38+08:00
 summary = "What a short day it was as a student in Singapore! Dont wanna go back!"
 math = false

