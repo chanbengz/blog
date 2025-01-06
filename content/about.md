@@ -18,6 +18,7 @@ In formal situation, I go by the name Ben Chen or CHEN Ben. In other cases, you 
 
 ## $ cat /etc/friends
 
+- [Jaredanjerry Xiao](https://jaredanwolfgang.github.io/)
 - [Roderick Tianrun Qiu](https://r-q.name/)
 - [Zhuo Wang](https://we-are-zed.github.io/)
 - [xciphand](https://b.x-d.fun/)
