@@ -402,6 +402,7 @@ the wrong way.
 // A -> Y_1 Y_2 Y_3 ... Y_m
 void production_A() {
 backtrack:
+    term current_token = next_token();
     vector<term> terms = get_production_rule();
     if (terms.empty()) return report_error();
 
@@ -414,7 +415,7 @@ backtrack:
                 continue;
             }
         } else if (terms[i] == current_token) {
-            next_token();
+            current_toke = next_token();
         } else {
             reset_to_last_state();
             goto backtrack;
@@ -447,7 +448,7 @@ Sadly, FIRST is not perfect, because it probably contains epsilon.
 ![](look-ahead-cont.png)
 
 Computing FOLLOW set for all nonterminals
-1. $\text{FOLLOW}(S) = \{\$\}$, where $S$ is the start symbol and $\$$ is the end of input, i.e., EOF
+1. $\text{FOLLOW}(S) = \{\$\}$, where $S$ is the start symbol and $ is the end of input, i.e., EOF
 2. If $A \rightarrow \alpha B \beta$, then everything in $\text{FIRST}(\beta)$ except $\epsilon$ is in $\text{FOLLOW}(B)$
 3. If $A \rightarrow \alpha B$, or $A \rightarrow \alpha B \beta$ and $\epsilon \in \text{FIRST}(\beta)$, then everything in $\text{FOLLOW}(A)$ is in $\text{FOLLOW}(B)$
 4. Keep repeating 3 and 4 until no more changes
@@ -485,13 +486,14 @@ vector<term> get_production_rule() {
 }
 
 void production_A() {
+    term current_token = next_token();
     vector<term> terms = get_production_rule();
 
     for (int i = 0; i < terms.size(); i++) {
         if (is_non_terminal(terms[i])) {
             production(terms[i]);
         } else if (terms[i] == current_token) {
-            next_token();
+            current_token = next_token();
         } else {
             report_error();
         }
@@ -571,14 +573,14 @@ $$
 into
 
 $$
-A \rightarrow \beta_1A' | \beta_2A' | \cdots | \beta_mA'
+A \rightarrow \beta_1A^{\prime} | \beta_2A^{\prime} | \cdots | \beta_mA^{\prime}
 $$
 
 $$
-A' \rightarrow \alpha_1A' | \alpha_2A' | \cdots | \alpha_nA' | \epsilon
+A^{prime} \rightarrow \alpha_1A^{\prime} | \alpha_2A^{\prime} | \cdots | \alpha_nA^{\prime} | \epsilon
 $$
 
-Left factoring results in conflicts in the parsing table because there're same elements in the FIRST sets. Turn
+Left factoring results in conflicts in the parsing table because there^{prime}re same elements in the FIRST sets. Turn
 
 $$
 A \rightarrow \alpha \beta_1 | \alpha \beta_2 | \cdots | \alpha \beta_n
@@ -587,11 +589,11 @@ $$
 to
 
 $$
-A \rightarrow \alpha A'
+A \rightarrow \alpha A^{prime}
 $$
 
 $$
-A' \rightarrow \beta_1 | \beta_2 | \cdots | \beta_n
+A^{prime} \rightarrow \beta_1 | \beta_2 | \cdots | \beta_n
 $$
 
 ### Bottom-Up Parsing
@@ -623,7 +625,86 @@ This is called **LR parsing** and LR(k) parser is the most common bottom-up pars
 
 LR parsing is more powerful than LL parsing and can recognize virtually all programming language CFGs.
 
-LR is facing the problem: to shift or to reduce? Lookahead!
+LR is facing the problem: to shift or to reduce? Lookahead! More specifically, if you're in the middle of parsing
+and you have seen the non-terminals, input token gives you the hint to shift or to reduce. So let's first
+figure out all of the intermediate states -- LR(0) items.
+
+LR(0) items are the production rules with a dot in the right-hand side, indicating how much we have derived
+- $$A \rightarrow X \cdot Y Z$$: We have derived $X$ and are expecting $YZ$
+
+The actual internal state is the set of LR(0) items, called canonical LR(0) collection. To construct it, we
+need a start state first, by adding a new production rule $S^{\prime} \rightarrow S$ where $S$ is the start symbol.
+$S^{\prime}$ is the new start symbol and we can the new grammar the augmented grammar. When $S^{\prime} \rightarrow S$
+is reduced, the parsing is done. And this allows S to have multiple alternatives production.
+
+Then we calculate the closure of LR(0) item sets. Suppose $I$ is the initial set of LR(0) items, then
+- If $A \rightarrow \alpha \cdot B \beta$ is in $I$ and $B \rightarrow \gamma$ is a production rule, then
+  add $B \rightarrow \cdot \gamma$ to $\text{CLOSURE}(I)$, i.e., about to start deriving $B$
+
+If two closure sets are identical, the initial $I$ distinguish them because $I$ indicates how it transited by GOTO.
+Then GOTO generates new sets of LR(0) items by moving the dot one step to the right. The same symbol the dot across
+indicates they are in the same new set.
+
+$$
+I^{\prime} = \text{GOTO}(I, X) = \{A \rightarrow \alpha B \cdot \beta\}
+$$
+
+Going over the CLOSURE and GOTO, we finally get the states and transitions for parser's DFA. 
+The parsing table hints four actions
+1. Goto, if the next symbol in GOTO is a non-terminal, transit the state at the top of stack to the new state
+2. Shift, if the next symbol in GOTO is a terminal, push it to the stack
+3. Reduce, if there's LR(0) item with dot reaches the end, reduce the stack by the production rule
+    and the next symbols are FOLLOW of it
+4. Accpet, $S^{\prime} \rightarrow S$ is reduced when seeing EOF "$"
+
+![](lr-table-example.png)
+
+This is called LR(1)/SLR(1).
+
+Bit of different from DFA, LR parsers do not only have one state but stack of states.
+LR parsers have a complete state as what we call "Configuration", which is stack and input status
+
+![](configuration-couple.png)
+
+The states in stack indicates the symbols it holds and the symbols are about to be reduced. And
+you may wonder when the Goto action is taken, because inputs are all terminals. The answer is that
+it is taken when the stack is reduced to the non-terminal. Recall that reduce action replaces the 
+top symbols with one non-terminal, so the stack must also pop out the same number of states and then
+push one state according to the Goto action.
+
+![](lr-parsing-example.png)
+
+So we the algorithm
+
+```c
+void parse() {
+    stack<int> stk;
+    stk.push(0);
+    term current_token = next_token();
+
+    while (true) {
+        int state = stk.top();
+        int action = parsing_table[state][current_token];
+        // action = transition * 4 + ACTION (1 shift, 2 reduce, 3 accept, 0 error)
+        // i.e. shift 2 = 2 * 4 + 0
+        if (action & 3 == SHIFT) {
+            stk.push(action >> 2);
+            current_token = next_token();
+        } else if (action & 3 == REDUCE) {
+            vector<term> production = productions[action >> 2];
+            for (int i = 0; i < production.size(); i++) {
+                stk.pop();
+            }
+            int new_state = parsing_table[stk.top()][production.index]; // Goto
+            stk.push(new_state);
+        } else if (action & 3 == ACCEPT) {
+            return;
+        } else {
+            report_error();
+        }
+    }
+}
+```
 
 ## Semantic Analysis
 
