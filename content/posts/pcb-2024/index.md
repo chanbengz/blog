@@ -779,7 +779,7 @@ $$
 g^m \equiv y^r r^s \mod (p - 1)
 $$
 
-经典El-Gamal，只需要伪造$m^{\prime}$ 使得 $m^{\prime} m = \mod (p-1)$即可。
+经典El-Gamal，只需要伪造$m^{\prime}$ 使得 $m^{\prime} m = 1 \mod (p-1)$即可。
 
 IV不影响后面的解密，然后png文件头又是固定，就可以解出来。
 

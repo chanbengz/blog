@@ -141,6 +141,9 @@ materials from atoms, are called **Regular Definitions**, in forms like
 $$
   d_1 \rightarrow r_1
 $$
+$$
+  d_2 \rightarrow r_2
+$$
 ...
 $$
   d_n \rightarrow r_n
@@ -333,12 +336,241 @@ table-driven parsers are referred to as parser generators because they generate 
 
 ### Context-Free Grammars
 
+CFGs are similar to regular definitions, and they have four components:
+- **Terminals**: The actual symbols of tokens, like `int`, `main`, `return`, etc.
+- **Non-terminals**: The symbols denoting the production rules, like `stmt`, `expr`, etc.
+- **Start symbol**: The only non-terminal symbol that starts the derivation, like `prgm`.
+- **Production rules**: The rules that define the syntax of the language, in form of `A -> B`, where `A` is a non-terminal
+  and `B` is a sequence of terminals and non-terminals.
+
+Example of CFG:
+
+- **Terminals**: (, ), +, -, id, num
+- **Non-terminals**: expr, term
+- **Start symbol**: expr
+- **Production rules**: `|` means "or", because there are multiple rules for the same non-terminal.
+  - `expr -> expr + expr | expr - expr | term`
+  - `term -> ( expr ) | id | num`
+
+If the input tokens are valid according to the CFG, they can be **derived** from the start symbol.
+This is called the **derivation**. For example,
+
+**CFG**: `E -> – E | E + E | E * E | ( E ) | id`
+**Input**: `-(id)`
+
+We can derive it by `E => -E => -(E) => -(id)`. Sometimes we can save some steps as they are obvious, like `E => -(E) => -(id)`.
+
+Then all of the derivations have their own name,
+- **Sentential form**: If the derivation `S => a` is valid, then `a` is a sentential form of `S` and `a` is a string of terminals and non-terminals.
+- **Sentence**: If the sentential form contains only terminals, then it's a sentence.
+
+As you may have noticed, the derivation is not unique, and we can have multiple derivations for the same input.
+To reduce the ambiguity, we have the concept of **leftmost derivation** and **rightmost derivation**. The leftmost derivation
+requires that the leftmost non-terminal is replaced at each step, and the rightmost derivation requires the rightmost.
+
+The derivation might be hard to read, so we have **parse trees** to represent the derivation. The parse tree is a tree-like structure
+where
+- **Root**: The start symbol
+- **Interior nodes**: Non-terminals
+- **Leaves**: Terminals
+
+![](example-parse-tree.png)
+
+However, the leftmost/rightmost derivation may have ambiguity, for example
+
+![](example-amgibuity.png)
+
+Often it's the problem of designing the CFG, and there's no general method to solve it. But we can use the precedence and associativity
+to solve it, like the precedence of operators in math.
+
+CFGs are more expressive than regular definitions. We can prove that languages described by regular definitions can also be described
+by CFGs. Simply convert regular definitions to NFAs and then write a CFG to simulate the NFA.
+
+![](nfa-to-cfg.png)
+
+But the opposite is not possible because regular expression cannot deal with recursion, while CFG can. Counterexample is the 
+language $L = \{a^nb^n | n \geq 0\}$, whose CFG is `S -> aSb | ab`.
 
 ### Top-Down Parsing
 
+Top-down parsing acts similar to the derivation. But the major problem for implementation is that if there're alternatives in the
+production rule, we don't know which one is the right way to go (no ambiguity). The intuition is that we can backtrack if we went
+the wrong way.
+
+```c
+// A -> X_1 X_2 X_3 ... X_n
+// A -> Y_1 Y_2 Y_3 ... Y_m
+void production_A() {
+backtrack:
+    vector<term> terms = get_production_rule();
+    if (terms.empty()) return report_error();
+
+    for (int i = 0; i < terms.size(); i++) {
+        if (is_non_terminal(terms[i])) {
+            if (production(terms[i]) == FAIL) {
+                reset_to_last_state();
+                goto backtrack;
+            } else {
+                continue;
+            }
+        } else if (terms[i] == current_token) {
+            next_token();
+        } else {
+            reset_to_last_state();
+            goto backtrack;
+        }
+    }
+}
+```
+
+Going over the production rules is way too slow, can we avoid backtracking? Or the problem can be paraphrased as
+can we predict the right production rule to go? Yes, looking ahead helps because we can avoid those wrong ways that
+don't even contain the current token at the beginning -- impossible to derive the current token.
+
+![](look-ahead.png)
+
+So the FIRST functions give the first terminal that can be derived from a non-terminal, and the prediction can 
+simply by implemented by check the FIRST set of the non-terminal.
+
+Next, how can we calculate the FIRST set? $\text{FIRST}(X)$ by
+- If $X$ is a terminal, then $\text{FIRST}(X) = \{X\}$
+- If $X \rightarrow \epsilon$, then $\epsilon \in \text{FIRST}(X)$
+- If $X \rightarrow Y_1Y_2Y_3...Y_n$, then find the leftmost $Y_i$ that doesn't derive $\epsilon$, then $\text{FIRST}(Y_i) \in \text{FIRST}(X)$
+
+and for production $X_1X_2X_3...X_n$
+1. Add non-$\epsilon$ $\text{FIRST}(X_1)$ to $\text{FIRST}(X_1X_2X_3\cdotsX_n)$
+2. If $\epsilon \in \text{FIRST}(X_1)$, add non-$\epsilon$ $\text{FIRST}(X_2)$ to $\text{FIRST}(X_1X_2X_3\cdotsX_n)$
+3. Keep going until no $\epsilon$ in $\text{FIRST}(X_i)$, and add $\epsilon$ if all $X_i$ have $\epsilon$ in FIRST.
+
+Sadly, FIRST is not perfect, because it probably contains epsilon.
+
+![](look-ahead-cont.png)
+
+Computing FOLLOW set for all nonterminals
+1. $\text{FOLLOW}(S) = \{\$\}$, where $S$ is the start symbol and $\$$ is the end of input, i.e., EOF
+2. If $A \rightarrow \alpha B \beta$, then everything in FIRST($\beta$) except $\epsilon$ is in FOLLOW($B$)
+3. If $A \rightarrow \alpha B$, or $A \rightarrow \alpha B \beta$ and $\epsilon \in \text{FIRST}(\beta)$, then everything in FOLLOW($A$) is in FOLLOW($B$)
+4. Keep repeating 3 and 4 until no more changes
+
+![](why-we-need-first-follow.png)
+
+Finally, we can throw backtracking away and at the same time, we receive a table-driven parser. Non-backtracking parsers require LL(1) grammar
+- 1st L: Left-to-right scan of input
+- 2nd L: Leftmost derivation
+- 1: Looking ahead one token
+
+A grammar G is LL(1) if and only if for any two distinct productions $A \rightarrow \alpha | \beta$, the following conditions hold:
+1. There is no terminal $a$ such that $\alpha$ and $\beta$ derive strings beginning with $a$
+2. At most one of $\alpha$ and $\beta$ can derive the empty string
+3. If $\beta$ derives epsilon, then $\alpha$ does not derive any string beginning with a terminal in FOLLOW($A$) and vice versa
+
+Those restrictions are hard to memorize, but they are intuitive when you understand how the LL(1) parser works -- this is all about
+choosing the right production rule by looking ahead.
+
+It's more intuitive to understand the LL(1) parser by looking at the table. Table-driven parsers are state machines whose transitions
+are the parsing table. During parsing, the parser reads the current token and keep deriving the leftmost non-terminal until the current
+token appears leftmost in the stack. Parsing table tells the parser which production rule to choose by looking at the current token and 
+push the right-hand side of the production rule to the stack.
+
+![](parsing-table-construction.png)
+
+![](parsing-table-example.png)
+
+If the parsing table has multiple entries, i.e. conflicts, then the grammar is not LL(1). And we get the production rule 
+once for all
+
+```c
+vector<term> get_production_rule() {
+    return parsing_table[current_state][current_token];
+}
+
+void production_A() {
+    vector<term> terms = get_production_rule();
+
+    for (int i = 0; i < terms.size(); i++) {
+        if (is_non_terminal(terms[i])) {
+            production(terms[i]);
+        } else if (terms[i] == current_token) {
+            next_token();
+        } else {
+            report_error();
+        }
+    }
+}
+```
+
+Simulating the LL(1) parser without recursion.
+
+![](table-driven-parsing.png)
+
+```c
+void parse() {
+    stack<term> stk;
+    stk.push(start_symbol);
+    term current_token = next_token();
+
+    while (!stk.empty()) {
+        term top = stk.top();
+        stk.pop();
+
+        if (is_terminal(top)) {
+            if (top == current_token) {
+                current_token = next_token();
+            } else {
+                report_error();
+            }
+        } else {
+            vector<term> production = parsing_table[top][current_token];
+            if (production.empty()) {
+                report_error(); // No entry in the parsing table
+            } else if (top == EOF) {
+                return; // Accept
+            } else {
+                for (int i = production.size() - 1; i >= 0; i--) {
+                    stk.push(production[i]); // epsilon is not pushed
+                }
+            }
+        }
+    } 
+}
+```
+
+### LL(1) Ambiguity
+
+Dangling else problem
+
+Left recursion
+
+Left factoring
 
 ### Bottom-Up Parsing
 
+As we human being read from left to right, rightmost derivation is not intuitive [^1]. So we do some reverse thinking.
+
+[^1]: You definitely can revert the token stream but is it really necessary?
+
+What if we don't derive but reduce?
+
+```
+E => E + E => E + (E * E) => id + (E * E) => id + (id * E) => id + (id * id)
+```
+into
+```
+id + (id * id) => E + (id * id) => E + (E * id) => E + (E * E) => E + E => E
+```
+
+If you read the latter one from right to left, it's a rightmost derivation. And meanwhile, the reduction is leftmost,
+consistent with the left-to-right scan of the input. Yeah, it's bottom-up parsing. We have the notations
+- **Shift**: Push the current token to the stack
+- **Reduce**: Replace elements in the stack with a non-terminal according to the production rule
+
+Stack holds the symbols and represents the current state of parser -- bottom-up parser does not have a recursive form.
+This is called **LR parsing** and LR(k) parser is the most common bottom-up parser.
+- **L**: Left-to-right scan of input
+- **R**: Rightmost derivation in reverse(reduction)
+- **k**: Looking ahead $k$ tokens, often $k < 2$ is enough
+
+LR parsing is more powerful than LL parsing and can recognize virtually all programming language CFGs.
 
 ## Semantic Analysis
 
