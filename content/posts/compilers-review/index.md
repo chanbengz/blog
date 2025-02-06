@@ -580,7 +580,7 @@ $$
 A^{prime} \rightarrow \alpha_1A^{\prime} | \alpha_2A^{\prime} | \cdots | \alpha_nA^{\prime} | \epsilon
 $$
 
-Left factoring results in conflicts in the parsing table because there^{prime}re same elements in the FIRST sets. Turn
+Left factoring results in conflicts in the parsing table because there're same elements in the FIRST sets. Turn
 
 $$
 A \rightarrow \alpha \beta_1 | \alpha \beta_2 | \cdots | \alpha \beta_n
@@ -589,11 +589,11 @@ $$
 to
 
 $$
-A \rightarrow \alpha A^{prime}
+A \rightarrow \alpha A^{\prime}
 $$
 
 $$
-A^{prime} \rightarrow \beta_1 | \beta_2 | \cdots | \beta_n
+A^{\prime} \rightarrow \beta_1 | \beta_2 | \cdots | \beta_n
 $$
 
 ### Bottom-Up Parsing
@@ -706,6 +706,19 @@ void parse() {
 }
 ```
 
+
+
+### Comparison
+
+- The languages (grammars) that can be handled: CLR > LALR > SLR
+    - CLR > LALR: LALR is obtained by merging the states of CLR, but sometimes reduce/reduce conflicts occur
+    - LALR > SLR: LR(1) items avoid casual reduce actions in some cases
+- Number of states in the parsing table: CLR > LALR = SLR
+    - CLR > SLR: LR(1) items introduce more information
+    - LALR = SLR: LALR merges the states with the same LR(0) items, eliminating the extra information
+- Driver programs: SLR = CLR = LALR
+    - They are all table-driven parsers, only with different parsing tables
+
 ## Semantic Analysis
 
 
@@ -715,11 +728,39 @@ void parse() {
 ### Syntax-Directed Translation
 
 
-## Intermediate Representation
+## Intermediate-Code Generation
+
+We reach the end of front-end of compiler.
+
+### Intermediate Representation
+
+### Type and Declarations
+
+### Type Checking
+
+### Translation of Expressions
+
+### Control Flow
+
+### Backpatching
 
 ## Runtime Environment
 
+### Storage Organization
+
+### Stack Space Allocation
+
+### Heap Management
+
 ## Code Generation
+
+### Target Language
+
+### Addresses in the Target Code
+
+### Basic Blocks and Flow Graph
+
+### A Simple Code Generator
 
 ## Data Flow Analysis
 
@@ -727,4 +768,6 @@ void parse() {
 
 I myself always get surprised by the abstraction of compilers and the well-designed of them. The theories, unlike those in
 other CS courses, are intuitive and practical. Learning compilers is not only learning the theories, but also learning the
-software engineering. It's a great course and I hope you enjoy it as much as I do. Happy hacking!
+software engineering. It's a great course and I hope you enjoy it as much as I do. 
+
+Happy hacking!
