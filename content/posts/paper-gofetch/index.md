@@ -272,14 +272,6 @@ $$ c = (\verb|tmp|\cdot R^{-1})^{E^{-1}}\ \text{mod}\ p $$
 
 这样攻击者就可以通过观测Probe Set (`ptr`) 的访问时间来推断$s_{i-1}$的值是否正确。此时由于$E$的特殊性，攻击者需要调整`tmp`的值来使得$\verb|tmp|\cdot R^{-1}$是可以被开n次二次根式的。`tmp`只需要包括一个`ptr`然后剩余的位用于调整即可。
 
-### Kyber
-
-TBD
-
-### Dilithium
-
-TBD
-
 ## Mitigation
 
 文章粗略地给出了一些缓解措施，这里稍微翻译总结一下

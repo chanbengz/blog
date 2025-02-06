@@ -700,9 +700,15 @@ Rabin 签名也是不抗Chosen-Message Attack 的，因为攻击者可以通过
 
 同态加密(Homomorphic Encryption)是一种加密方案，可以在密文上进行运算，然后解密后得到的结果和在明文上进行运算得到的结果是一样的。这个技术可以用于安全多方计算(MPC)问题，即多个不可信的参与者可以在不泄漏私密信息的情况下进行计算。
 
+### Zero-Knowledge Proof
+
+ZKP的"proof"跟数学上的证明不同，它是一个交互式、有概率的过程(Interactive probabilistic proofs)，verifier不是完全相信命题永真，
+而是在多次验证后，如果命题通过的概率很高，那么就接受这个命题。比如说Alice和Bob玩猜可乐的游戏, Alice 要证明她能尝出来可乐的区别
+Bob随机选百事或可口可乐, Alice猜, 如果Alice对了$k$次, 那Bob相信她能尝出来可乐的区别的概率是$1 - 2^{-k}$。
+
 ### Quadratic Residual (QR)
 
-TBD
+
 
 ### Schnorr’s Identification Protocol
 
