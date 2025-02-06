@@ -378,7 +378,7 @@ where
 
 However, the leftmost/rightmost derivation may have ambiguity, for example
 
-![](example-amgibuity.png)
+![](example-ambiguity.png)
 
 Often it's the problem of designing the CFG, and there's no general method to solve it. But we can use the precedence and associativity
 to solve it, like the precedence of operators in math.
@@ -438,8 +438,8 @@ Next, how can we calculate the FIRST set? $\text{FIRST}(X)$ by
 - If $X \rightarrow Y_1Y_2Y_3...Y_n$, then find the leftmost $Y_i$ that doesn't derive $\epsilon$, then $\text{FIRST}(Y_i) \in \text{FIRST}(X)$
 
 and for production $X_1X_2X_3...X_n$
-1. Add non-$\epsilon$ $\text{FIRST}(X_1)$ to $\text{FIRST}(X_1X_2X_3\cdotsX_n)$
-2. If $\epsilon \in \text{FIRST}(X_1)$, add non-$\epsilon$ $\text{FIRST}(X_2)$ to $\text{FIRST}(X_1X_2X_3\cdotsX_n)$
+1. Add non-$\epsilon$ $\text{FIRST}(X_1)$ to $\text{FIRST}(X_1 X_2 X_3\cdots X_n)$
+2. If $\epsilon \in \text{FIRST}(X_1)$, add non-$\epsilon$ $\text{FIRST}(X_2)$ to $\text{FIRST}(X_1 X_2 X_3 \cdots X_n)$
 3. Keep going until no $\epsilon$ in $\text{FIRST}(X_i)$, and add $\epsilon$ if all $X_i$ have $\epsilon$ in FIRST.
 
 Sadly, FIRST is not perfect, because it probably contains epsilon.
@@ -448,8 +448,8 @@ Sadly, FIRST is not perfect, because it probably contains epsilon.
 
 Computing FOLLOW set for all nonterminals
 1. $\text{FOLLOW}(S) = \{\$\}$, where $S$ is the start symbol and $\$$ is the end of input, i.e., EOF
-2. If $A \rightarrow \alpha B \beta$, then everything in FIRST($\beta$) except $\epsilon$ is in FOLLOW($B$)
-3. If $A \rightarrow \alpha B$, or $A \rightarrow \alpha B \beta$ and $\epsilon \in \text{FIRST}(\beta)$, then everything in FOLLOW($A$) is in FOLLOW($B$)
+2. If $A \rightarrow \alpha B \beta$, then everything in $\text{FIRST}(\beta)$ except $\epsilon$ is in $\text{FOLLOW}(B)$
+3. If $A \rightarrow \alpha B$, or $A \rightarrow \alpha B \beta$ and $\epsilon \in \text{FIRST}(\beta)$, then everything in $\text{FOLLOW}(A)$ is in $\text{FOLLOW}(B)$
 4. Keep repeating 3 and 4 until no more changes
 
 ![](why-we-need-first-follow.png)
@@ -537,11 +537,62 @@ void parse() {
 
 ### LL(1) Ambiguity
 
-Dangling else problem
+Ambiguous leftmost parse tree violates LL(1) immediately. There's no generous solution to the ambiguity, but we can learn from
+the famous Dangling-else problem. Suppose
 
-Left recursion
+```
+stmt -> if expr then stmt 
+      | if expr then stmt else stmt 
+      | other
+```
 
-Left factoring
+![](if-else-tree.png)
+
+The last else-statement can be attached to the first if-statement or the second if-statement. We solve it by associating the else
+to the nearest if-statement, which is the first parse tree, by rewriting the grammar
+
+```
+stmt -> matched_stmt | unmatched_stmt
+
+matched_stmt -> if expr then matched_stmt else matched_stmt
+              | other
+
+unmatched_stmt -> if expr then stmt
+                | if expr then matched_stmt else unmatched_stmt
+```
+
+Left recursion occurs if a non-terminal derives itself directly or indirectly e.g. `A => Ab`, where parser got stuck in an infinite loop.
+It's not a problem for LR parser so we transform the left recursion to right recursion by rewriting the grammar
+
+$$
+A \rightarrow A\alpha_1 | A\alpha_2 | \cdots | A\alpha_n | \beta_1 | \beta_2 | \cdots | \beta_m
+$$
+
+into
+
+$$
+A \rightarrow \beta_1A' | \beta_2A' | \cdots | \beta_mA'
+$$
+
+$$
+A' \rightarrow \alpha_1A' | \alpha_2A' | \cdots | \alpha_nA' | \epsilon
+$$
+
+Left factoring results in conflicts in the parsing table because there're same elements in the FIRST sets. Turn
+
+$$
+A \rightarrow \alpha \beta_1 | \alpha \beta_2 | \cdots | \alpha \beta_n
+$$
+
+to
+
+$$
+A \rightarrow \alpha A'
+$$
+
+$$
+A' \rightarrow \beta_1 | \beta_2 | \cdots | \beta_n
+$$
 
 ### Bottom-Up Parsing
 
@@ -571,6 +622,8 @@ This is called **LR parsing** and LR(k) parser is the most common bottom-up pars
 - **k**: Looking ahead $k$ tokens, often $k < 2$ is enough
 
 LR parsing is more powerful than LL parsing and can recognize virtually all programming language CFGs.
+
+LR is facing the problem: to shift or to reduce? Lookahead!
 
 ## Semantic Analysis
 
