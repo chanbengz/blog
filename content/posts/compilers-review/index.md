@@ -389,7 +389,7 @@ by CFGs. Simply convert regular definitions to NFAs and then write a CFG to simu
 ![](nfa-to-cfg.png)
 
 But the opposite is not possible because regular expression cannot deal with recursion, while CFG can. Counterexample is the 
-language $L = \{a^nb^n | n \geq 0\}$, whose CFG is `S -> aSb | ab`.
+language $L = \left{a^nb^n | n \geq 0\right}$, whose CFG is `S -> aSb | ab`.
 
 ### Top-Down Parsing
 
@@ -577,7 +577,7 @@ A \rightarrow \beta_1A^{\prime} | \beta_2A^{\prime} | \cdots | \beta_mA^{\prime}
 $$
 
 $$
-A^{prime} \rightarrow \alpha_1A^{\prime} | \alpha_2A^{\prime} | \cdots | \alpha_nA^{\prime} | \epsilon
+A^{\prime} \rightarrow \alpha_1A^{\prime} | \alpha_2A^{\prime} | \cdots | \alpha_nA^{\prime} | \epsilon
 $$
 
 Left factoring results in conflicts in the parsing table because there're same elements in the FIRST sets. Turn
@@ -630,7 +630,7 @@ and you have seen the non-terminals, input token gives you the hint to shift or 
 figure out all of the intermediate states -- LR(0) items.
 
 LR(0) items are the production rules with a dot in the right-hand side, indicating how much we have derived
-- $$A \rightarrow X \cdot Y Z$$: We have derived $X$ and are expecting $YZ$
+- $A \rightarrow X \cdot Y Z$: We have derived $X$ and are expecting $YZ$
 
 The actual internal state is the set of LR(0) items, called canonical LR(0) collection. To construct it, we
 need a start state first, by adding a new production rule $S^{\prime} \rightarrow S$ where $S$ is the start symbol.
