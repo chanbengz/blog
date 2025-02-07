@@ -389,7 +389,7 @@ by CFGs. Simply convert regular definitions to NFAs and then write a CFG to simu
 ![](nfa-to-cfg.png)
 
 But the opposite is not possible because regular expression cannot deal with recursion, while CFG can. Counterexample is the 
-language $L = \left{a^nb^n | n \geq 0\right}$, whose CFG is `S -> aSb | ab`.
+language $L = \lbrace a^nb^n | n \geq 0 \rbrace$, whose CFG is `S -> aSb | ab`.
 
 ### Top-Down Parsing
 

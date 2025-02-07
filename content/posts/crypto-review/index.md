@@ -708,13 +708,94 @@ Bob随机选百事或可口可乐, Alice猜, 如果Alice对了$k$次, 那Bob相�
 
 ### Quadratic Residual (QR)
 
+一个数$a$是一个二次剩余(Quadratic Residual)当且仅当存在一个整数$x$使得$a = x^2 \mod n$。如果不知道$n$的分解, 给定任意一个$a$, 判断$a$是不是二次剩余是一个困难问题。还有一些特性
+- 如果$n$是质数, 那么$\mathbb{Z}_n^*$有生成元$g$，那么$a$是二次剩余当且仅当$a = g^{2i}$
+- QR是一个群, 已知$x\in \mathbb{QR}_n$, 随机选一个$y \in \mathbb{QR}_n$，那么$xy \in \mathbb{QR}_n$也是随机的, 即
+$$ Pr[xy = z] = 1 \backslash |\mathbb{QR}_n| $$
 
+如果Alice(Prover)向Bob(Verifier)证明$a$是$n$的二次剩余，那么Alice需要给出$x = w^2 \mod n$, ZKP使得$w$不泄漏给Bob。
+这个过程叫QR Protocol，具体流程如下
+1. $P \rightarrow V$: Alice随机选一个$u \leftarrow_R \mathbb{Z}_n^*$，然后发送$y = u^2 \mod n$给Bob
+2. $V \rightarrow P$: Bob随机选一个$b \leftarrow_R \lbrace 0, 1 \rbrace$，然后发送$b$给Alice
+3. $P \rightarrow V$: 如果$b = 0$，Alice发送$u$给Bob，否则发送$u \cdot w \mod n$给Bob
+4. Verify: Bob收到$z$, 然后算二次剩余。$b = 0$, $z^2 = y\mod n$; $b = 1$, $z^2 = x \cdot y\mod n$, Bob接受证明。
+
+完备性(Completeness): 如果$x$确实是二次剩余并且Alice知道$w$, 他俩遵守协议并通过验证的概率是1。
+可靠性(Soundness): 如果$x$不是二次剩余，那么无论Alice发送什么, Bob有1/2的概率拒绝。
+
+Alice 可能不遵守规则, 我们记这种策略(Strategy)为函数$P^*$: 如果输入空串, 她返回$y$字符串; 如果输入$b$, 她返回$z$。
+
+> **Lemma 15.1** 设证明非法的二次剩余$(x, n)$, 给定任意$P^*$, 有
+>
+> $$Pr_{b \rightarrow_R \lbrace 0, 1 \rbrace}[\text{out} \langle P^*, V_{x,b} \rangle = \text{accpet}] \leq 1/2$$
+>
+> 这里记$\langle P, V \rangle$为QR Protocol的交互。
+> - $\text{out}_V\langle P, V\rangle$是Protocol结束时V的输出
+> - $\text{view}_P\langle P, V\rangle$是Protocol交互中P收到的所有信息
+
+零知识性(Zero-Knowledge): 我们假设$x = w^2 \mod n$是困难的, 当Bob想获得$w$时, 他只能通过分解$y = u^2 \mod n$再
+$w = z \cdot u^{-1} \mod n$，第一步是困难的，所以$w$无法泄漏给Bob。
+
+> **Definition 15.2** 如果对于每个T-time的作弊验证者$V^*$, 存在一个关于T多项式复杂读的非交互式算法$S$(Simulator), 
+> 使得对于公开的输入$x$和秘密$w$, 以下两个随机变量是$(T, \epsilon)$-计算不可区分(computationally indistinguishable)
+> 
+> - $\text{view} \langle P_{U_m, x, w}, V^* \rangle$ , $U_m$是Prover内部的随机数(随机量$m$)
+> - $S(x)$, $S$的输出, $S$可能内部有随机所以是个随机变量
+> 
+> 那么这个证明策略是$(T, \epsilon)$-zero knowledge的
+
+Simulator $S$的作用是模拟Prover的行为，使得Verifier无法区分Prover和Simulator的行为。这个定义是一个计算不可区分的应用，
+即对于任意多项式时间的攻击者，他无法区分Prover和Simulator的行为, 那攻击者窃取不到任何信息。
+
+> **Lemma 15.3** QR Protocol是$(\infty, 2^{-|x|})$-zero knowledge的
 
 ### Schnorr’s Identification Protocol
 
-TBD
+Schnorr's Protocol是一个基于离散对数问题的ZKP，证明Alice知道$h$的关于$g\in \mathbb{Z}_p$的对数$x$, 即$h = g^x \mod p$
+1. $P \rightarrow V$: Alice随机选一个$r \leftarrow_R \mathbb{Z}_p$，然后发送$a = g^r$给Bob
+2. $V \rightarrow P$: Bob随机选一个$b \leftarrow_R \mathbb{Z}_p$，然后发送$e$给Alice
+3. $P \rightarrow V$: Alice计算$c = r + b \cdot x \mod p$，然后发送$c$给Bob
+4. Verify: Bob计算$g^c = a \cdot h^b \mod p$，则接受证明
+
+完备性很显然, 但不是zero-knowledge的, 因为如果Bob重复2, 3步得到另外的$b^{\prime}, c^{\prime}$, 那么他可以
+$$ah^b = g^c, ah^{b^{\prime}} = g^{c^{\prime}} \Rightarrow h^{b - b^{\prime}} = g^{c - c^{\prime}}$$, 然后根据
+$h = g^x$可以两边同时取$(b - b^{\prime})^{-1}$次方得到$x = (c - c^{\prime}) \cdot (b - b^{\prime})^{-1}$。
+
+Simulator: 骗Verifier, 随机选$b, c \leftarrow_R \mathbb{Z}_p$，然后计算$a = h^{-b} \cdot g^c$，然后发送$a$给Verifier。
 
 ### Homomorphic Encryption
+不是Homo。上来先扔个定义，抽象一下同态函数
 
-TBD
+> **Definition 15.6** 两个群$G, G^{\prime}$ 是homomorphic (同态), 当存在一个函数$f: G \rightarrow G^{\prime}$使得
+> 对于所有$x,y\in G$ 有 $f(x + y) = f(x) +_{G^{\prime}} f(y)$
 
+RSA 是乘法同态的, 即$Dec(Enc(x) Enc(y)) = xy$。但我们需要加乘法都同态, 因为{XOR, AND}是完备的, 我们可以用这俩组合出所有的运算。
+比如OR, $x \vee y = (x + y) + x\cdot y \mod 2$。
+
+如果这俩同态能同时实现, 那我们称其为全同态加密(Fully-homomorphic encryption)。
+
+> **Definition 15.7** 如果我们有一个CPA安全的公钥加密算法$(G,E,D)$加密1bit信息, 那当存在一个算法NAND使得对于
+> $(e,d) \leftarrow G(1^n), a,b \in \lbrace 0,1 \rbrace$ 然后加密 $\hat{a} \leftarrow E_e(a), \hat{b} \leftarrow E_e(b)$ 有
+>
+> $$\text{NAND}_e(\hat{a}, \hat{b}) \approx E_e(a \text{ NAND } b)$$
+>
+> $a \text{ NAND } b = \lnot (a \wedge b)$, 它是全同态的。
+
+### Gentry’s scheme
+
+思路很简单，加噪声。如果加密一个bit $b$:
+1. 选一个质数$p$作为密钥, 随机选个大数$q$, 再选个小数$r$
+2. 加密$c = pq + 2r + b$, 因为$q$不定, 所以$b$被隐藏了
+3. 解密$c \mod p = 2r + b$, 奇数$b = 1$, 偶数0
+
+XOR:
+$$ c_1 + c_2 = (q_1 + q_2)p + 2(r_1 + r_2) + (b_1 + b_2) = Enc(b_1 + b_2) $$
+
+AND:
+$$ c_1 \cdot c_2 = (c_2q_1 + c_1q_2 - q_1q_2)p + 2(2r_1r_2 + r_1b_2 + r_2b_1) + b_1b_2 = Enc(b_1 \cdot b_2) $$
+
+不过这个方案也不是完美的, 因为noise $r$会累积, 如果$|\text{noise}| > p \backslash 2$, 那么解密就会出错。
+
+## Epilogue
+
+理论有点多，所以对打比赛意义不大。
