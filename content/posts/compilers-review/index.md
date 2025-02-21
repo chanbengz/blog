@@ -121,8 +121,8 @@ Elements in the alphabet are constructed together to form a string, and so all t
 Language is a set, so it surely has the operations of set:
 | Operation | Definition and Notation | Example |
 | --- | --- | --- |
-| Union | $L_1 \cup L_2 = \{s | s \in L_1 \text{ or } s \in L_2\}$ | Digits $\cup$ Letters = $\{0, 1, 2, \ldots, 9, a, b, c, \ldots, z\}$ |
-| Concatenation | $L_1L_2 = \{s_1s_2 | s_1 \in L_1 \text{ and } s_2 \in L_2\}$ | DigitsLetters = $\{0a, 0b, 0c, \ldots, 9z\}$ |
+| Union | $L_1 \cup L_2 = \lbrace s \| s \in L_1 \text{ or } s \in L_2\rbrace$ | Digits $\cup$ Letters = $\{0, 1, 2, \ldots, 9, a, b, c, \ldots, z\}$ |
+| Concatenation | $L_1L_2 = \lbrace s_1s_2 \| s_1 \in L_1 \text{ and } s_2 \in L_2\rbrace$ | DigitsLetters = $\{0a, 0b, 0c, \ldots, 9z\}$ |
 | Kleene Closure | $L^* = \cup_{i=0}^{\infty} L^i$ | $L^* = $ the set of all strings over the alphabet including the empty string |
 | Positive Closure | $L^+ = \cup_{i=1}^{\infty} L^i$ | Excluding the empty string |
 
@@ -132,7 +132,7 @@ we have the alphabet $\Sigma$ and denote the language by $L(a)$, where $a \in \S
 - Induction: If $r$ and $s$ are regular expressions, then so are:
   - $r | s$ union denoting $L(r) \cup L(s)$
   - $rs$ concatenation, denoting $L(r)L(s)$
-  - $r^*$ Kleene closure denoting $(L(r))^*$
+  - $r^{\*}$ Kleene closure denoting $(L(r))^*$
   - $(r_1)$ grouping the language $L(r) = r$.
 
 Language as a set makes regexp operations with algebraic properties, like identity, associative and communicative,
@@ -721,46 +721,74 @@ void parse() {
 
 ## Semantic Analysis
 
+TBD
 
 ### Syntax-Directed Definitions
 
+TBD
 
 ### Syntax-Directed Translation
 
+TBD
 
 ## Intermediate-Code Generation
 
 We reach the end of front-end of compiler.
 
 ### Intermediate Representation
+TBD
 
 ### Type and Declarations
 
+TBD
+
 ### Type Checking
+
+TBD
 
 ### Translation of Expressions
 
+TBD
+
 ### Control Flow
 
+TBD
+
 ### Backpatching
+
+TBD
 
 ## Runtime Environment
 
 ### Storage Organization
 
+TBD
+
 ### Stack Space Allocation
 
+TBD
+
 ### Heap Management
+
+TBD
 
 ## Code Generation
 
 ### Target Language
 
+TBD
+
 ### Addresses in the Target Code
+
+TBD
 
 ### Basic Blocks and Flow Graph
 
+TBD
+
 ### A Simple Code Generator
+
+TBD
 
 ## Data Flow Analysis
 
