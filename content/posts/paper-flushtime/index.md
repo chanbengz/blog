@@ -231,7 +231,7 @@ Spectre-BTB则是还原所有的bytes。
 ## Limitations
 
 需要改进的点还是有很多的...
-1. LRDCounter的设计需要优化, 比如能智能地监控可疑进程
+1. LRDCounter的设计需要优化, 需要跟踪每个进程, 并实时调整NumCSLR
 2. 实际的NumLRMB, 即精度的调整需要根据实际情况调整, 防止错杀
 3. 关注其他的性能计数器, 比如`PMCCNTR_EL0`; 能阻止攻击者自己构造的timer
 4. 防御非flush-based攻击, 比如Prime+Probe和SpectrePrime, 考虑与其他防御措施结合
