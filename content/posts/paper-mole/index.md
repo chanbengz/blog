@@ -3,7 +3,7 @@ title = 'Mole: Breaking GPU TEE with GPU-Embedded MCU'
 date = 2025-03-20T18:42:24+08:00
 summary = "Shouldn't blame the GPU TEE on ARM Mali GPU, but the Shim-Style GPU TEE's credit chain."
 math = true
-draft = true
+draft = false
 categories = ['Security']
 tags = ['Paper', 'ARM', 'TEE Attack']
 +++
