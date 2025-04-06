@@ -18,7 +18,7 @@ tags = ['Paper', 'GPU', 'Consistency']
 给出了一个魔改CPU Consistency分析的框架Dartagnan并用`.cat`语言描述GPU Consistency Model,
 顺便用这个框架发现了两个bug.
 
-~~读了好几遍才看懂, 要重修离散了~~
+~~读了好几遍才看懂, 要重修离散和OS了~~
 
 ## Introduction
 

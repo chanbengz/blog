@@ -17,20 +17,19 @@ tags = ['Diary']
 
 ~~太菜了没去~~ 看cyy大佬分享的东西心里痒痒, 决定PhD期间必须要发一篇ASPLOS!
 
-[WACI](https://www.asplos-conference.org/asplos2025/waci/) Session 好搞笑, 
+[WACI](https://www.asplos-conference.org/asplos2025/waci/) Session 好有意思,
 算是arch界的搞笑大会了, 好想去感受一下。
 
 ## What's Up
 
-CB最近在忙啥
-
 ~~老板好有想法, 我好废物。~~
 
-最近在忙
+最近在忙啥
 - 在挖Intel Xeon的一个Accelerator的漏洞, 但是结果非常反常, 不知道咋办
     - 老板一语惊醒梦中人, 但是我还是有点没懂, 再思索一下
-- 老板推荐了一篇GPU的文章和一篇Prefetcher的side-channel, 后者我太熟悉了所以读的快, 前者看了好几遍才看懂
+- 老板推荐了一篇GPU的文章和一篇Prefetcher的Side Channel, 后者我太熟悉了所以读的快, 但前者看了好几遍才看懂
 - 软工被k8s按在地上摩擦, 想架构想到头发掉光
+- ~~某工学院项目接近收尾+维护, 不过可以摆一摆~~
 
 ## Future
 
