@@ -123,26 +123,30 @@ params:
 # menu on right top
 menu:
   main:
+    - identifier: stat
+      url: https://umami.benx.dev/share/LG6Vq9qkgWMhkSEk/blog.benx.dev
+      name: Stat
+      weight: 10
     - identifier: categories
       name: Categories
       url: /categories/
-      weight: 10
+      weight: 20
     - identifier: tags
       name: Tags
       url: /tags/
-      weight: 20
+      weight: 30
     - identifier: archives
       name: Archives
       url: /archives/
-      weight: 30
+      weight: 40
     - identifier: search
       name: Search
       url: /search/
-      weight: 40
+      weight: 50
     - identifier: about
       name: About
       url: /about/
-      weight: 50
+      weight: 60
 
 pygmentsUseClasses: true
 markup:
