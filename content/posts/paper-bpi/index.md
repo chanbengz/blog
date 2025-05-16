@@ -15,7 +15,7 @@ tags = ['Paper', 'ARM', 'Side-Channel']
 ## Preface
 
 TL;RD: Intel 分支预测器的更新是异步的, 也就是说当一个分支指令被执行完之后的一段时间内才会更新。
-这导致BTI的防御实效，使得攻击者仍然可以污染Kernel空间的分支预测器。
+这导致BTI的防御失效，使得攻击者仍然可以污染Kernel空间的分支预测器。
 
 ETH Zurich的研究者发现Intel的Branch Predictor存在Race Condition, 即分支指令执行时的context
 信息不会跟随Branch Predictor的延迟更新。因此, 如果攻击者在用户态执行一条分支指令并随后立即跳转到
@@ -44,7 +44,7 @@ Intel 有一个特殊的feature，由于RSB会存在下溢的问题（即ret指�
 Return Stack Buffer Alternative) 策略，把ret指令当作indirect branch指令来预测 (虽然ret是一个indirect
 branch, 但是ret的预测只会采用RSB的结果)。而AMD和ARM处理器没有这种策略。
 
-### BTI
+### Branch Target Injection
 
 Spectre攻击，即通过污染分支预测器的目标地址来使得victim的分支预测失效，从而使用Spectre攻击污染cache并泄漏信息。
 BTI primitive通过污染能索引到victim分支的条目(记得BTB用部分PC索引)，来使其预测跳转到任意地址，而推测执行会
