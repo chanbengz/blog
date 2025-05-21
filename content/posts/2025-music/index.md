@@ -1,5 +1,5 @@
 +++
-title = "What's Ben listening in 2025"
+title = "What's Ben Listening in 2025"
 date = 2025-05-13T22:31:13+08:00
 summary = "Music Recommendation"
 math = false
@@ -26,8 +26,12 @@ tags = ['Diary']
 
 ### Post Rock
 
-这个门类比较大，主要有Shoegaze/Emogaze, Math 和 JRock(小日子的Rock)
-- [Mirror](https://music.apple.com/cn/album/mirror/1793279565?i=1793279840)
+这个门类比较大，主要有Alternative, Shoegaze/Emogaze, Math 和 JRock(小日子的Rock)
+- [OK Computer](https://music.apple.com/cn/album/ok-computer/1097861387) & [Kid A](https://music.apple.com/cn/album/kid-a/1097862870) 从高中听到现在, 时不时鉴赏一下。同学问我人这么阳光为啥听这么emo的~~是不是地雷男啊~~, 我回答道如果你只听出emo那你还得多听, 别整天搁那Creep。
+- [丑奴儿](https://music.apple.com/cn/album/%E9%86%9C%E5%A5%B4%E5%85%92/1676735354?l=en-GB) 草东yyds, 和声节奏衔接很在线, 一整个专循环
+- [A Rush of Blood to the Head](https://music.apple.com/cn/album/a-rush-of-blood-to-the-head/1122775993?l=en-GB) & [Parachutes](https://music.apple.com/cn/album/parachutes/1122782080?l=en-GB) Coldplay 千禧年的代表作, 从此之后转型流行。有人说不就是玩U2剩下的？但U2没有Coldplay的青涩
+- [General](https://music.apple.com/cn/album/general/1594482558?l=en-GB) & [Education](https://music.apple.com/cn/album/kyouiku-education/1440763800?l=en-GB) 林檎阿姨巧妙地融合Jazz与Rock, 真的爵爵子
+- [Mirror](https://music.apple.com/cn/album/mirror/1793279565?i=1793279840) 新人
 - [Ocd](https://music.apple.com/cn/album/ocd/1690322766?i=1690322773) 和 [Tokudaimo](https://music.apple.com/cn/album/%E7%89%B9%E5%A4%A7%E5%A4%A2/1690322766?i=1690322775) 应该也是新人
 - [Imitation Diamond](https://music.apple.com/cn/album/imitation-diamond-ep/1764278959?l=en-GB) 和 [Dive](https://music.apple.com/cn/album/dive-single/1731087748?l=en-GB) sidenerds 是新人乐队, 本年度CB首推, emogaze的神。循环了几十次了吧
 - [KOKE](https://music.apple.com/cn/album/koke/1770242092?i=1770242094&l=en-GB) ZUTOMAYO今年唯一能听的

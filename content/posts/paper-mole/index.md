@@ -1,6 +1,6 @@
 +++
 title = 'Mole: Breaking GPU TEE with GPU-Embedded MCU'
-date = 2025-03-20T18:42:24+08:00
+date = 2025-05-20T18:42:24+08:00
 summary = "Shouldn't blame the GPU TEE on ARM Mali GPU, but the Shim-Style GPU TEE's credit chain."
 math = true
 draft = false
@@ -11,8 +11,6 @@ tags = ['Paper', 'ARM', 'TEE Attack']
 本文介绍利用ARM Mali GPU内置的MCU窃取GPU秘密的攻击。核心在于Shim-Style GPU TEE的信用链有缺陷。
 
 ## Motivation & Background
-
-~~因为实验中被攻击的GPU TEE是师兄写的(StrongBox)，猜测他们设计TEE的时候已经发现有这个缺陷~~
 
 ### GPU TEE
 
