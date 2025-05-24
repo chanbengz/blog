@@ -7,6 +7,10 @@ tags = ['Vim']
 categories = ['Tools']
 +++
 
+> **WARNING**
+> 俺已经不再使用NvChad了，转而使用了[LazyVim](https://lazyvim.github.io/)，这个配置功能更强大，而且breaking change更少。
+> 有空再写一篇LazyVim的使用指南吧。
+
 > **Warning**
 > 本文主要为Mac用户提供Neovim/Nvchad的安装，配置和使用食用指北。请Windows 用户老老实实用VS Code，不要折腾。如果想体验VIM，可以尝试安装Linux虚拟机/物理机。讲得不清楚的地方请直接指出。
 
