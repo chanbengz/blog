@@ -8,10 +8,9 @@ math: true
 
 ## $ whoami
 
-I'm [Ben Chen (陈贲)](https://i.benx.dev), currently a full-time undergraduate at [Southern University of Science and Technology](https://www.sustech.edu.cn/en), majoring in Computer Science and Technology, focusing on System Security, advised by [Prof. Fengwei Zhang](https://fengweiz.github.io/). I'm doing internship at Arch Lab, working on microarchitectural security of xPUs.
+It's [Ben Chen (陈贲)](https://i.benx.dev), currently undergraduate at [Southern University of Science and Technology](https://www.sustech.edu.cn/en), majoring in Computer Science and Technology, focusing on System Security, advised by [Prof. Fengwei Zhang](https://fengweiz.github.io/). I'm doing internship at Arch Lab instructed by [Prof. Yun Chen](https://https://yunchen-juuuump.github.io/), working on microarchitectural security of xPUs.
 
-Also a CTFer, playing for [COMPASS CTF](https://home.compassc.tf) and S1mu4i (sometimes H4aG4au).
-Good at **Web** and **Crypto**.
+Also a CTFer, playing for [COMPASS CTF](https://www.compassc.tf) and [S1mu4i](https://www.s1um4i.com/) (sometimes H4aG4au). Good at **Web** and **Crypto**.
 
 ## $ cat /etc/nicknames
 
@@ -19,6 +18,7 @@ In formal situation, I go by the name Ben Chen or CHEN Ben. In other cases, you 
 
 ## $ cat /etc/friends
 
+- [Site Fan (GuTao)](https://fanst.cc)
 - [Jaredanjerry Xiao](https://jaredanwolfgang.github.io/)
 - [Roderick Tianrun Qiu](https://r-q.name/)
 - [Zhuo Wang](https://we-are-zed.github.io/)
